@@ -4,7 +4,9 @@ const port = process.env.EXPRESS_PORT || 3000
 const bodyParser = require('body-parser');
 require('dotenv').config()
 const colors = require('colors');
+var cors = require('cors')
 
+app.use(cors({ origin: ['http://localhost:8080'], }))
 
 //////connext DB
 var connextDB = require( './connextDB' );
