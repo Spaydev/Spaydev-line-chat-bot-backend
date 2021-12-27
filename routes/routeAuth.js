@@ -4,10 +4,10 @@ const controllerAuth = require('../controllers/controllerAuth');
 
 
 
-router.get('/login', controllerAuth.Login)
+router.post('/login', controllerAuth.Login)
 
 
-router.get('/register', controllerAuth.Register)
+router.post('/register', controllerAuth.Register)
 
 
 

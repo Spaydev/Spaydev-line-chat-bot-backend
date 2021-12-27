@@ -4,9 +4,10 @@ const jwt = require("jwt-simple");
 module.exports.Login = async(req,res) =>{
     console.log(req.body);
     try{
-        const dataLogin = req.query
+        const dataLogin = req.body
         const result = await AboutUserModels.LoginUser(dataLogin)
-        res.send(result);
+        console.log(result);
+        return res.send(result);
 
     }catch (err) {
         console.log(err)
@@ -17,7 +18,7 @@ module.exports.Login = async(req,res) =>{
 
 module.exports.Register = async(req,res) =>{
     try{
-    const dataRegister = req.query
+    const dataRegister = req.body
     const result = await AboutUserModels.RegisterUser(dataRegister)
     res.send(result);
 
