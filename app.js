@@ -6,7 +6,7 @@ require('dotenv').config()
 const colors = require('colors');
 var cors = require('cors')
 
-app.use(cors({ origin: ['http://localhost:8080'], }))
+app.use(cors())
 
 //////connext DB
 var connextDB = require( './connextDB' );

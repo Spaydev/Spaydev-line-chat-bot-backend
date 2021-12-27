@@ -2,7 +2,7 @@ const mongoShare = require( '../connextDB' );
 const bcrypt = require('bcrypt');
 
 module.exports.RegisterUser = async(req,res) =>{
-
+    console.log("models",req);
     const client = mongoShare.getDATABASE();
     const result = await client.collection("users").findOne({username: req.username});
         if(result === null){
@@ -38,9 +38,7 @@ module.exports.LoginUser = async(req,res) =>{
                 status: result.status,
                 point: result.point,
            }
-            return [userData,{ status:'' ,message:'Login Success' }];
-        }else{
-            return [null,{ status:'' ,message:'Login Fail' }];
+           return userData
         }
     }
 
