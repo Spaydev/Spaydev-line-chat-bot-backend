@@ -28,6 +28,7 @@ module.exports.RegisterUser = async(req,res) =>{
 module.exports.LoginUser = async(req,res) =>{
     const client = mongoShare.getDATABASE();
     const result = await client.collection("users").findOne({username: req.username});
+
     if(result !== null ){
         const match = await bcrypt.compare(req.password, result.password);
         if(match) {
@@ -38,8 +39,12 @@ module.exports.LoginUser = async(req,res) =>{
                 status: result.status,
                 point: result.point,
            }
-           return userData
+           return [true,userData]
+        }else{
+            return false
         }
+    }else{
+        return false
     }
 
 

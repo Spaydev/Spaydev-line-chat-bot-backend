@@ -31,3 +31,4 @@ app.use('/', routeIndex)
 app.listen(port, '0.0.0.0', async () => {
   console.log(`${colors.yellow(`SERVER RUN http://localhost:${port}`)}`)
 })
+

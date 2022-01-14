@@ -2,12 +2,10 @@ const AboutUserModels = require('../models/AboutUser');
 const jwt = require("jwt-simple");
 
 module.exports.Login = async(req,res) =>{
-    console.log(req.body);
     try{
         const dataLogin = req.body
         const result = await AboutUserModels.LoginUser(dataLogin)
-        console.log(result);
-        return res.send(result);
+        return res.send(result)
 
     }catch (err) {
         console.log(err)

@@ -6,6 +6,6 @@ const routeAuth = require("./routeAuth")
 const routeWebhook = require("./routeWebhook")
 
 router.use('/api/auth',routeAuth)
-router.use('/api/webhook',routeWebhook)
+router.use('/webhook',routeWebhook)
 
 module.exports = router;

@@ -1,3 +1,7 @@
+const eventManage = require('../manage-events/eventManages');
+
 module.exports.Webhook = async(req,res) =>{
-    res.send("Webhook")
+
+   await eventManage.EventManage(req)
+    
 }
