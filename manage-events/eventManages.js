@@ -6,6 +6,7 @@ const CC = require('currency-converter-lt')
 const AboutAlertCoin = require('../models/AboutAlertCoin');
 let currencyConverter = new CC()
 
+
 //////////////// config  ////////////////
 const config = {
     channelAccessToken: process.env.ChannelAccessToken,
@@ -66,56 +67,96 @@ module.exports.EventManage = async(req,res) =>{
           });
         } else if (eventText === 'COMMAND') {
             msg = {
-              "type": "template",
-              "altText": "this is a command list",
-              "template": {
+                "type": "template",
+                "altText": "this is a command list",
+                "template": {
                 "type": "buttons",
                 "imageBackgroundColor": "#C6F016",
                 "title": "command list",
                 "text": " ",
                 "actions": [
-                  {
+                    {
                     "type": "message",
                     "label": "News",
                     "text": "today"
-                  },
-                  {
+                    },
+                    {
                     "type": "message",
                     "label": "Top Gamefi Coins",
                     "text": "topcoindefigame"
-                  },
-                  {
+                    },
+                    {
                     "type": "message",
                     "label": "My coin",
                     "text": "mycoin"
-                  },
-                  {
+                    },
+                    {
                     "type": "message",
                     "label": "Add coin",
                     "text": "!addcoin"
-                  }
+                    }
                 ]
-              }
+                }
             } 
         }else if(eventText.split(" ")[0] === '!ADDCOIN'){
 
-          const coin = eventText.split(" ")[1] || null
-          const price = await new CC({ from:"USD", to:"THB", amount:0.933289 }).convert()
-          console.log(price);
+            const coin = eventText.split(" ")[1] || null
 
+            if(coin === null){
+                msg = [{
+                    "type": "text",
+                    "text": "example\n\n !addcoin token"
+                }]
+            }else if(coin.length == 42 && coin !== null ){
+                const result = await AboutAlertCoin.addmyCoin(event)
+                if(result != undefined){
+                    msg = [{
+                        "type": "text",
+                        "text": "Token is already"
+                    }]
+                }else if(result == undefined){
+                    msg = [{
+                        "type": "text",
+                        "text": "Coins have been added"
+                    }]
+                }
+            
+          }else if(coin.length < 42){
+            msg = {
+              "type": "template",
+              "altText": "this is a buttons template",
+              "template": {
+                "type": "buttons",
+                "title": "Question 1",
+                "text": "Where do you spend your money most ? ",
+              
+              }
+            }
+          }
+          
+          // console.log(coin);
 
         }else if(eventText.split(" ")[0] === 'MYCOIN'){
 
-          msg = [];
+          msg = [
+              {
+                "type": "text",
+                "text":"Your Coins"
+              },{
+                "type": "sticker",
+                "packageId": "11537",
+                "stickerId": "52002759"
+              }
+          ];
           const getCoinUser = await AboutAlertCoin.myCoin(event)
           const getCoinAPI = await getDetailCoin(getCoinUser)
-          console.log(getCoinAPI);
+
           for (let i = 0; i < getCoinAPI.length; i++) {
-            const price_coin = parseFloat(getCoinAPI[i].data.price)
+            const price_coin = parseFloat(getCoinAPI[i].price) 
             let currencyConverter = await new CC({from:"USD", to:"THB", amount:price_coin}).convert();
             obj = {
               "type": "text",
-              "text": `${getCoinAPI[i].data.name} coin : ${getCoinAPI[i].data.symbol}\n\nUSD : ${parseFloat(getCoinAPI[i].data.price).toFixed(3)}\nTHB : ${currencyConverter}\n\ntoken : ${getCoinAPI[i].data.token}`
+              "text": `${getCoinAPI[i].name} coin : ${getCoinAPI[i].symbol}\n\nUSD : ${parseFloat(getCoinAPI[i].price).toFixed(3)}\nTHB : ${currencyConverter}\n\ntoken : ${getCoinAPI[i].token}`
             }
             msg.push(obj)
           }
@@ -137,7 +178,6 @@ getListTopGamesCryptoToday = async(req,res) =>{
 
     await page.goto('https://crypto.com/price/categories/gamefi')
     for(i = 4; i < 11; i++){
-
         let nameElemet = await page.waitForSelector("#__next > div.css-19qzm77 > div.chakra-container.css-p5b43h > div > div.css-1y0bycm > table > tbody > tr:nth-child("+i+") > td.css-1qxvubu > div > a > span.chakra-text.css-1mrk1dy")
         let name = await page.evaluate(nameElemet => nameElemet.textContent, nameElemet)
 
@@ -156,14 +196,22 @@ getListTopGamesCryptoToday = async(req,res) =>{
 }
 
 getDetailCoin = async(token) =>{
-  obj = []
-  for (let i = 0; i < token[0].coin.length; i++) {
-    await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${token[0].coin[i]}`)
-    .then(function (response) {
-      obj.push(response.data)
-      obj[i].push(obj[i].data.token = token[0].coin[i])
-    }).catch(error=>{
-    });
-  }
-  return obj 
+    objCoins = []
+    for (let i = 0; i < token.length; i++) {
+        await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${token[i]}`)
+        .then(function (response) {
+            data = { 
+                name:response.data.data.name,
+                symbol:response.data.data.symbol,
+                price:response.data.data.price,
+                price_BNB:response.data.data.price_BNB,
+                token:token[i]
+            }
+            objCoins.push(data)
+        }).catch(error=>{
+            // obj.push(token[i]+" Token by address: Invalid address")
+        });
+    } 
+    console.log(objCoins);
+  return objCoins 
 }

@@ -5,7 +5,7 @@ module.exports = {
 
     connectDB: async function( callback ) {
       await MongoClient.connect( process.env.MONGODB_SV,  { useNewUrlParser: true }, function( err, client ) {
-      _db = client.db('demo_chat');
+      _db = client.db(process.env.MONGODB_DB_NAME);
       return callback( err );
     } );
   },

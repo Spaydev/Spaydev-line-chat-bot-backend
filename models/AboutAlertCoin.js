@@ -6,23 +6,58 @@ module.exports.AboutAlertCoin = async(req,res) =>{
    
 }
 
+module.exports.addmyCoin = async(req,res) =>{
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("mycoin")
+    let obj = {
+
+        "userLineId": req.source.userId,
+        "coin": req.message.text.split(" ")[1]
+    }
+
+    let query = [{
+            '$match': {
+                'userLineId': req.source.userId,
+                'coin':req.message.text.split(" ")[1]
+            }
+        }]
+    const result = await col.aggregate(query).toArray()
+    if(result[0]){
+
+        return result[0]
+
+    }else if(!result[0]){
+        
+        const resultAddcoin = await col.insertOne(obj, function (err, result) {
+            if (err) throw err;
+            return
+        });
+        return result[0]
+    }
+ 
+
+
+     
+}
 
 module.exports.myCoin = async(req,res) =>{
-    const userId = req.source['userId']
-    const dataUserCoin = [
-        { userId: 'U40564fe286e7cff861e7d260d008f2e8' ,
-            coin:['0x0ecaf010fc192e2d5cbeb4dfb1fee20fbd733aa1','0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c','0x55d398326f99059ff775485246999027b3197955'] 
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("mycoin")
+    let query = [{
+        '$match': {
+            'userLineId': req.source.userId,
         }
-    ]
-
-    function search(arr, searchKey) {
-        return arr.filter(function(obj) {
-          return Object.keys(obj).some(function(key) {
-            return obj[key].includes(searchKey);
-          })
-        });
+    }]
+    const mycoin = []
+    const result = await col.aggregate(query).toArray()
+    if(result[0]){
+        for (let i = 0; i < result.length; i++) {
+            mycoin.push(result[i].coin)
+        }
+        return mycoin
+    }else{
+        console.log("fials");
     }
-    const result = await search(dataUserCoin, userId) || "null"; 
-    return result
+
      
 }
