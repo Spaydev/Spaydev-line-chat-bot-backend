@@ -9,6 +9,7 @@ module.exports.AboutAlertCoin = async(req,res) =>{
 module.exports.addmyCoin = async(req,res) =>{
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("mycoin")
+
     let obj = {
 
         "userLineId": req.source.userId,
@@ -18,7 +19,10 @@ module.exports.addmyCoin = async(req,res) =>{
     let query = [{
             '$match': {
                 'userLineId': req.source.userId,
-                'coin':req.message.text.split(" ")[1]
+                'coin':req.message.text.split(" ")[1],
+                'status':true,
+                'created_at': new Date(),
+                'updated_at': new Date(),
             }
         }]
     const result = await col.aggregate(query).toArray()
@@ -55,9 +59,37 @@ module.exports.myCoin = async(req,res) =>{
             mycoin.push(result[i].coin)
         }
         return mycoin
-    }else{
-        console.log("fials");
     }
 
      
+}
+
+
+module.exports.followCoin = async(req,res) =>{
+    let data = {
+        'userLineId':req.event.source.userId,
+        'token': req.token,
+        'price': req.priceAlert,
+        'created_at': new Date(),
+        'updated_at': new Date(),
+    }
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("followcoin")
+
+    const result = await col.insertOne(data)
+        .then(result => {
+            return true
+        })
+        .catch(err => {
+            console.log(err);
+            return false
+        });;
+    return result
+
+     
+}
+
+module.exports.addNftTime = async(req,res) =>{
+    return "req"
+   
 }

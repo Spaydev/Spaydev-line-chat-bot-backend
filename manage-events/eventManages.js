@@ -17,6 +17,7 @@ const client = new line.Client(config);
 
 module.exports.EventManage = async(req,res) =>{
     const event = req.body.events[0]
+    // console.log(event);
 
     handleMessageEvent(event)
 
@@ -29,137 +30,154 @@ module.exports.EventManage = async(req,res) =>{
     
         let eventText = event.message.text.toUpperCase();
     
-        if (eventText === 'TODAY') {
+        if (eventText === '!TODAY') {
             msg = {
               "type": "text",
               "text": "TO DAY"
             }
-        }else if (eventText === 'TOPCOINSDEFIGAME') {
-          const topCoinToday = await getListTopGamesCryptoToday()
-          console.log(topCoinToday);
-          objAdd = [];
-          msg = [{
-            "type": "text",
-            "text": "TOP COIN TO DAY"
-        },{
-              "type": "template",
-              "altText": "this is a carousel template",
-              "template": {
+        }else if (eventText === '!TOPCOINSDEFIGAME') {
+            const coinData = await getListTopGamesCryptoToday()
+            array=[]
+            msg=[{
+                "type": "text",
+                "text": " ⭐️ Top Gaming Tokens by Market Capitalization!!! \n By https://coinmarketcap.com/view/gaming/"
+            },{
+                "type": "template",
+                "altText": "this is a carousel template",
+                "template": {
                 "type": "carousel",
                 "imageSize": "contain",
-                "columns": objAdd
+                "columns": array
+                }
+            }]
+            for (let i = 0; i < coinData.length; i++) {
+                data={
+                    "thumbnailImageUrl": coinData[i].image[0],
+                    "title": "#"+(i+1)+" "+coinData[i].name,
+                    "text": `#${coinData[i].coin}\nMarket Cap : ${coinData[i].marketcap}`,
+                    "actions": [{
+                        "type": "uri",
+                        "label": "link",
+                        "uri": `https://coinmarketcap.com/${coinData[i].url}`
+                        }
+                    ]
+                }
+                array.push(data)
             }
-          }]
-         Object.keys(topCoinToday).map( function(key, index) {
-                data = {
-                  "thumbnailImageUrl": topCoinToday[index].chart,
-                  "title": topCoinToday[index].rank+". "+topCoinToday[index].name,
-                  "text": "balance : "+topCoinToday[index].balance +"\nvalume : "+topCoinToday[index].valume,
-                  "actions": [
-                    {
-                      "type": "message",
-                      "label": "View detail",
-                      "text": "Choose LINE Brown Card"
-                    }
-                  ]
-                }
-                objAdd.push(data)
-          });
-        } else if (eventText === 'COMMAND') {
-            msg = {
-                "type": "template",
-                "altText": "this is a command list",
-                "template": {
-                "type": "buttons",
-                "imageBackgroundColor": "#C6F016",
-                "title": "command list",
-                "text": " ",
-                "actions": [
-                    {
-                    "type": "message",
-                    "label": "News",
-                    "text": "today"
-                    },
-                    {
-                    "type": "message",
-                    "label": "Top Gamefi Coins",
-                    "text": "topcoindefigame"
-                    },
-                    {
-                    "type": "message",
-                    "label": "My coin",
-                    "text": "mycoin"
-                    },
-                    {
-                    "type": "message",
-                    "label": "Add coin",
-                    "text": "!addcoin"
-                    }
-                ]
-                }
-            } 
+        } else if (eventText === '!COMMAND') {
+            msg = [{
+                "type": "text",
+                "text": "📜 All command"
+              },{
+                "type": "text",
+                "text": "#Daily news about nft games\n - !today\n\n#My interesting coin \n - !mycoin\n - !addcoin [token]\n - !delcoin [token]\n\n#Top 5 Gaming Tokens\n - !topcoinsdefigame\n\n#Set price alerts coin\n - !followcoin [token] [price]\n\n#Notify when it's time to play nft games\n - !mynfttime\n - !addnfttime\n"
+              }]
         }else if(eventText.split(" ")[0] === '!ADDCOIN'){
-
             const coin = eventText.split(" ")[1] || null
-
-            if(coin === null){
+            
+            if(coin != null){
+                const coinTokenCheck = await getTokenInBlockChain(coin)
+                if(coinTokenCheck === true){
+                    const result = await AboutAlertCoin.addmyCoin(event)
+                    if(result != undefined){
+                        msg = [{
+                            "type": "text",
+                            "text": "Token is already"
+                        }]
+                    }else if(result == undefined){
+                        msg = [{
+                            "type": "text",
+                            "text": "Coins have been added"
+                        }]
+                    }
+                }else{
+                    msg = [{
+                        "type": "text",
+                        "text": " ❗️ Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
+                    }]
+                }   
+            }else{
                 msg = [{
                     "type": "text",
-                    "text": "example\n\n !addcoin token"
+                    "text": " ❗️ Invalid format.\n\n#example\n!addcoin token"
                 }]
-            }else if(coin.length == 42 && coin !== null ){
-                const result = await AboutAlertCoin.addmyCoin(event)
-                if(result != undefined){
-                    msg = [{
-                        "type": "text",
-                        "text": "Token is already"
-                    }]
-                }else if(result == undefined){
-                    msg = [{
-                        "type": "text",
-                        "text": "Coins have been added"
-                    }]
-                }
-            
-          }else if(coin.length < 42){
-            msg = {
-              "type": "template",
-              "altText": "this is a buttons template",
-              "template": {
-                "type": "buttons",
-                "title": "Question 1",
-                "text": "Where do you spend your money most ? ",
-              
-              }
             }
-          }
+            - !addcoin [token]
           
           // console.log(coin);
 
-        }else if(eventText.split(" ")[0] === 'MYCOIN'){
+        }else if(eventText.split(" ")[0] === '!MYCOIN'){
 
-          msg = [
-              {
-                "type": "text",
-                "text":"Your Coins"
-              },{
-                "type": "sticker",
-                "packageId": "11537",
-                "stickerId": "52002759"
-              }
-          ];
-          const getCoinUser = await AboutAlertCoin.myCoin(event)
-          const getCoinAPI = await getDetailCoin(getCoinUser)
-
-          for (let i = 0; i < getCoinAPI.length; i++) {
-            const price_coin = parseFloat(getCoinAPI[i].price) 
-            let currencyConverter = await new CC({from:"USD", to:"THB", amount:price_coin}).convert();
-            obj = {
-              "type": "text",
-              "text": `${getCoinAPI[i].name} coin : ${getCoinAPI[i].symbol}\n\nUSD : ${parseFloat(getCoinAPI[i].price).toFixed(3)}\nTHB : ${currencyConverter}\n\ntoken : ${getCoinAPI[i].token}`
+            msg = [];
+            const getCoinUser = await AboutAlertCoin.myCoin(event)
+            if(getCoinUser){
+                const getCoinAPI = await getDetailCoin(getCoinUser)
+                for (let i = 0; i < getCoinAPI.length; i++) {
+                    const price_coin = parseFloat(getCoinAPI[i].price) 
+                    let currencyConverter = await new CC({from:"USD", to:"THB", amount:price_coin}).convert();
+                    obj = {
+                        "type": "text",
+                        "text": `${getCoinAPI[i].name} #${getCoinAPI[i].symbol}\n\nUSD : ${parseFloat(getCoinAPI[i].price).toFixed(3)}\nTHB : ${currencyConverter}\n\ntoken : ${getCoinAPI[i].token}`
+                    }
+                    msg.push(obj)
+                }
+            }else{
+                obj={
+                    "type": "text",
+                    "text": "Please add at least 1 token.\n #use !addcoin token"
+                }
+                msg.push(obj)
             }
-            msg.push(obj)
-          }
+          
+        }else if(eventText.split(" ")[0] === '!FOLLOWCOIN'){
+
+            if(eventText.split(" ")[1] && eventText.split(" ")[2]){
+                const coinTokenCheck = await getTokenInBlockChain(eventText.split(" ")[1])
+                const price = eventText.split(" ")[2]
+
+                if(isNaN(price)){
+                    msg = [{
+                        "type": "text",
+                        "text": "Price number only.\n\n!followcoin [token] [price USD]"
+                    }]
+                }else{
+                    if(coinTokenCheck === true){
+                        obj={
+                            event,
+                            token:eventText.split(" ")[1].toLowerCase(),
+                            price:eventText.split(" ")[2],
+                        }
+
+                        const followCoinUser = await AboutAlertCoin.followCoin(obj)
+                        console.log(followCoinUser);
+
+                    }else{
+                        msg = [{
+                            "type": "text",
+                            "text": "Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
+                        }]
+                    }
+                }
+            }else{
+                msg={
+                    "type": "text",
+                    "text": "#Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
+                }
+            }
+            
+        }else if(eventText ==='!MYNFTTIME'){
+
+            console.log(eventText);
+        }else if(eventText.split(" ")[0] === '!ADDNFTTIME'){
+            if(eventText.split(" ")[0] === '!ADDNFTTIME' && eventText.split(" ")[1] && eventText.split(" ")[2]){
+                const ResultNftTime = await AboutAlertCoin.addNftTime(eventText)
+                console.log(ResultNftTime);
+            }else{
+                msg = {
+                    "type": "text",
+                    "text": "#Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name"
+                }
+            }
         }
     
         return await client.replyMessage(event.replyToken, msg);
@@ -176,23 +194,41 @@ getListTopGamesCryptoToday = async(req,res) =>{
 
     const objCrypto = []
 
-    await page.goto('https://crypto.com/price/categories/gamefi')
-    for(i = 4; i < 11; i++){
-        let nameElemet = await page.waitForSelector("#__next > div.css-19qzm77 > div.chakra-container.css-p5b43h > div > div.css-1y0bycm > table > tbody > tr:nth-child("+i+") > td.css-1qxvubu > div > a > span.chakra-text.css-1mrk1dy")
+    await page.goto('https://coinmarketcap.com/th/view/gaming/')
+    for(i = 1; i <= 5; i++){
+        let nameElemet = await page.waitForSelector("#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child("+i+") > td:nth-child(3) > div > a > div > div > p")
         let name = await page.evaluate(nameElemet => nameElemet.textContent, nameElemet)
 
-        let coinElemet = await page.waitForSelector("#__next > div.css-19qzm77 > div.chakra-container.css-p5b43h > div > div.css-1y0bycm > table > tbody > tr:nth-child("+i+") > td.css-1qxvubu > div > a > span.chakra-text.css-44ctie")
+        let coinElemet = await page.waitForSelector("#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div:nth-child(1) > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child("+i+") > td:nth-child(3) > div > a > div > div > div > p")
         let coin = await page.evaluate(coinElemet => coinElemet.textContent, coinElemet)
 
-        let priceElemet = await page.waitForSelector("#__next > div.css-19qzm77 > div.chakra-container.css-p5b43h > div > div.css-1y0bycm > table > tbody > tr:nth-child("+i+") > td.css-1fhswl6 > div > a")
+        let priceElemet = await page.waitForSelector("#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child("+i+") > td:nth-child(4) > div")
         let price = await page.evaluate(priceElemet => priceElemet.textContent, priceElemet)
+        
+        let image = await page.$$eval('#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child('+i+') > td:nth-child(3) > div > a > div > img', imgs => imgs.map(img => img.getAttribute('src')));
+        
+        let urlElemet = await page.$('#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child('+i+') > td:nth-child(3) > div > a');
+        let url = await page.evaluate(anchor => anchor.getAttribute('href'), urlElemet);
 
-        objCrypto.push({name,coin,price})
+        let marketcapElemet = await page.waitForSelector("#__next > div > div.main-content > div.sc-57oli2-0.comDeo.cmc-body-wrapper > div > div:nth-child(1) > div.h7vnx2-1.bFzXgL > table > tbody > tr:nth-child("+i+") > td:nth-child(7) > p > span.sc-1ow4cwt-0.iosgXe")
+        let marketcap = await page.evaluate(marketcapElemet => marketcapElemet.textContent, marketcapElemet)
+
+
+        objCrypto.push({name,coin,price,image,url,marketcap})
     }
 
     browser.close()
     return objCrypto
 
+}
+getTokenInBlockChain = async(token) =>{
+
+    return await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${token.toLowerCase()}`)
+        .then(function (response) {
+            return true
+        }).catch(error=>{
+            return false
+        });
 }
 
 getDetailCoin = async(token) =>{
@@ -212,6 +248,5 @@ getDetailCoin = async(token) =>{
             // obj.push(token[i]+" Token by address: Invalid address")
         });
     } 
-    console.log(objCoins);
   return objCoins 
 }
