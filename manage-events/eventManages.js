@@ -17,7 +17,7 @@ const client = new line.Client(config);
 
 module.exports.EventManage = async(req,res) =>{
     const event = req.body.events[0]
-    // console.log(event);
+    console.log(event);
 
     handleMessageEvent(event)
 
@@ -87,7 +87,7 @@ module.exports.EventManage = async(req,res) =>{
                     }else if(result == undefined){
                         msg = [{
                             "type": "text",
-                            "text": "Coins have been added"
+                            "text": " ✅ Coins have been added"
                         }]
                     }
                 }else{
@@ -138,7 +138,7 @@ module.exports.EventManage = async(req,res) =>{
                 if(isNaN(price)){
                     msg = [{
                         "type": "text",
-                        "text": "Price number only.\n\n!followcoin [token] [price USD]"
+                        "text": " ⚠️ Price number only.\n\n!followcoin [token] [price USD]"
                     }]
                 }else{
                     if(coinTokenCheck === true){
@@ -154,28 +154,48 @@ module.exports.EventManage = async(req,res) =>{
                     }else{
                         msg = [{
                             "type": "text",
-                            "text": "Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
+                            "text": " ⚠️ Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
                         }]
                     }
                 }
             }else{
                 msg={
                     "type": "text",
-                    "text": "#Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
+                    "text": "⚠️ #Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
                 }
             }
             
         }else if(eventText ==='!MYNFTTIME'){
+            const ResultMyNftTime = await AboutAlertCoin.myNftTime(event)
+            console.log(ResultMyNftTime);
 
-            console.log(eventText);
         }else if(eventText.split(" ")[0] === '!ADDNFTTIME'){
             if(eventText.split(" ")[0] === '!ADDNFTTIME' && eventText.split(" ")[1] && eventText.split(" ")[2]){
-                const ResultNftTime = await AboutAlertCoin.addNftTime(eventText)
-                console.log(ResultNftTime);
+                const ResultNftTime = await AboutAlertCoin.addNftTime(event)
+                msg={
+                    "type": "template",
+                    "altText": "this is a carousel template",
+                    "template": {
+                      "type": "carousel",
+                      "columns": [
+                        {
+                          "title": '✅ NFT time added',
+                          "text": `${ResultNftTime.name_nft_game}\n${ResultNftTime.time_alert}`,
+                          "actions": [
+                            {
+                              "type": "message",
+                              "label": "check my NFT time",
+                              "text": "!mynfttime"
+                            }
+                          ],
+                        }
+                      ]
+                    }
+                  }
             }else{
                 msg = {
                     "type": "text",
-                    "text": "#Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name"
+                    "text": "#Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name description"
                 }
             }
         }

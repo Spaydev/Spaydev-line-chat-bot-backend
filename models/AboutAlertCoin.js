@@ -89,7 +89,72 @@ module.exports.followCoin = async(req,res) =>{
      
 }
 
-module.exports.addNftTime = async(req,res) =>{
-    return "req"
+module.exports.addNftTime = async(req,res) =>{  
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("alert_nft_time")
+    const userTextCommand =  req.message.text 
+    const more_message_cmd = req.message.text.split(" ")[3] ? " "+req.message.text.split(" ")[3] : ''
+    data = {
+        'userLineId':req.source.userId,
+        'time_alert':userTextCommand.split(" ")[1],
+        'name_nft_game':userTextCommand.split(" ")[2]+more_message_cmd,
+        'status':'ON',
+        'created_at':new Date(),
+        'updated_at':new Date(),
+    }
+
+    const result = await col.insertOne(data)
+    .then(result => {
+        return data
+    })
+    .catch(err => {
+        console.log(err);
+        return false
+    });;
+    
+    return result
+   
+}
+
+module.exports.myNftTime = async(req,res) =>{  
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("alert_nft_time")
+    console.log("gggg");
+
+    let query = [{
+        '$match': {
+            'userLineId': req.source.userId,
+        }
+    }]
+    const result = await col.aggregate(query).toArray()
+    .then(result => {
+        return result
+    })
+    .catch(err => {
+        console.log(err);
+        return false
+    });;
+    
+    return result
+   
+}
+
+
+module.exports.userNftTime = async(req,res) =>{  
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("alert_nft_time")
+    data =[]
+    const result = await col.find({}).toArray()
+    .then(result => {
+        return result
+    })
+    .catch(err => {
+        console.log(err);
+        return false
+    });;
+    return result
    
 }
