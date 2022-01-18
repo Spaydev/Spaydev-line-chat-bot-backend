@@ -3,6 +3,7 @@ const dayjs = require('dayjs')
 require('dotenv').config()
 const AboutAlertCoin = require('../models/AboutAlertCoin');
 const line = require('@line/bot-sdk');
+const colors = require('colors');
 
 
 //////////////// config  ////////////////
@@ -13,16 +14,16 @@ const config = {
 const client = new line.Client(config);
 
 
-////update data base every 15min
+////update data base every 15 second
 let getuserNFTTime
 cron.schedule("*/15 * * * * *",async function() {
     getuserNFTTime = await getUserIndataBase() 
-    console.log("(getuserNFTTime) DATA BASE HAVE UPDATED ");
+    console.log("(getuserNFTTime) DATA BASE HAVE UPDATE".brightGreen);
 });
 
 ////main
-cron.schedule("*/5 * * * * *",async function() {
-    console.log(dayjs(new Date()).format('hh:mm'));
+cron.schedule("*/15 * * * * *",async function() {
+    console.log(dayjs(new Date()).format('HH:mm'));
     await proccessTimeMyNFT(getuserNFTTime)
 });
 
@@ -44,23 +45,21 @@ getUserIndataBase = async(req,res) =>{
 }
 
 proccessTimeMyNFT = async(req,res) =>{
-    const nowTime = dayjs(new Date()).format('hh:mm')
+    const nowTime = dayjs(new Date()).format('HH:mm')
     data = []
     for (var i = 0; i < req.length; i++) { 
-        if(req[i].time_alert == nowTime ){
-            pushMessageLineBot(req[i]) 
-        }
-        
+        req[i].time_alert == nowTime ? pushMessageLineBot(req[i]) : ''
+
     }
 }
 
 pushMessageLineBot = async(req,res) =>{
     const msg = [{
         "type": "text",
-        "text": `Hey @Spay`
+        "text": `Hey`
       },{
         "type": "template",
-        "altText": "this is a buttons template",
+        "altText": `${req.time_alert} | ${req.name_nft_game}`,
         "template": {
             "type": "buttons",
             "title": `🚨 NFT time has arrived. ${req.time_alert}`,
@@ -77,10 +76,10 @@ pushMessageLineBot = async(req,res) =>{
       
     await client.pushMessage(req.userLineId, msg)
         .then((response) => {
-        //   console.log("ok");
+        //   console.log(response);
         })
         .catch((err) => {
-          console.log(err);
+          console.log("pushMessage",err);
         });
 
 }

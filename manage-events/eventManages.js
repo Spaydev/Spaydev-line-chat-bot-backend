@@ -23,9 +23,9 @@ module.exports.EventManage = async(req,res) =>{
 
    async function handleMessageEvent(event) {
 
-        let msg = {
-            type: 'text',
-            text: 'toow the moon'
+        let msg = { 
+            "type": "text",
+            "text": "dont"
         };
     
         let eventText = event.message.text.toUpperCase();
@@ -43,7 +43,7 @@ module.exports.EventManage = async(req,res) =>{
                 "text": " ⭐️ Top Gaming Tokens by Market Capitalization!!! \n By https://coinmarketcap.com/view/gaming/"
             },{
                 "type": "template",
-                "altText": "this is a carousel template",
+                "altText": "⭐️ Top Gaming Tokens",
                 "template": {
                 "type": "carousel",
                 "imageSize": "contain",
@@ -102,7 +102,6 @@ module.exports.EventManage = async(req,res) =>{
                     "text": " ❗️ Invalid format.\n\n#example\n!addcoin token"
                 }]
             }
-            - !addcoin [token]
           
           // console.log(coin);
 
@@ -114,18 +113,18 @@ module.exports.EventManage = async(req,res) =>{
                 const getCoinAPI = await getDetailCoin(getCoinUser)
                 for (let i = 0; i < getCoinAPI.length; i++) {
                     const price_coin = parseFloat(getCoinAPI[i].price) 
-                    let currencyConverter = await new CC({from:"USD", to:"THB", amount:price_coin}).convert();
                     obj = {
                         "type": "text",
-                        "text": `${getCoinAPI[i].name} #${getCoinAPI[i].symbol}\n\nUSD : ${parseFloat(getCoinAPI[i].price).toFixed(3)}\nTHB : ${currencyConverter}\n\ntoken : ${getCoinAPI[i].token}`
+                        "text": `${getCoinAPI[i].name} #${getCoinAPI[i].symbol}\n\nUSD : $${parseFloat(getCoinAPI[i].price).toFixed(3)}\n\ntoken : ${getCoinAPI[i].token} \nhttps://poocoin.app/tokens/0x0ecaf010fc192e2d5cbeb4dfb1fee20fbd733aa1`
                     }
                     msg.push(obj)
                 }
             }else{
                 obj={
                     "type": "text",
-                    "text": "Please add at least 1 token.\n #use !addcoin token"
+                    "text": "Please add at least 1 token.\n\n!addcoin [token]"
                 }
+
                 msg.push(obj)
             }
           
@@ -166,21 +165,49 @@ module.exports.EventManage = async(req,res) =>{
             }
             
         }else if(eventText ==='!MYNFTTIME'){
+            data=[]
+            sortTime=[]
+            msg = [{ 
+                "type": "text",
+                "text": "⏳ Notify when the time comes"
+            },{
+                "type": "template",
+                "altText": "this is a carousel template",
+                "template": {
+                  "type": "carousel",
+                  "imageSize": "contain",
+                  "columns": data
+                }
+              }];
             const ResultMyNftTime = await AboutAlertCoin.myNftTime(event)
-            console.log(ResultMyNftTime);
+            for (let i = 0; i < ResultMyNftTime.length; i++) {
+                const h = ResultMyNftTime[i].time_alert.split(":")[0]
+                const m = ResultMyNftTime[i].time_alert.split(":")[1]
+                obj = {
+                    "title": `${ResultMyNftTime[i].time_alert} AM`,
+                    "text": `${ResultMyNftTime[i].name_nft_game}`,
+                    "actions": [{
+                            "type": "message",
+                            "label": "delete",
+                            "text": "!deletenfttime "+ResultMyNftTime[i]._id
+                    }]
+                        
+                }
+                data.push(obj)
+            }
 
         }else if(eventText.split(" ")[0] === '!ADDNFTTIME'){
             if(eventText.split(" ")[0] === '!ADDNFTTIME' && eventText.split(" ")[1] && eventText.split(" ")[2]){
                 const ResultNftTime = await AboutAlertCoin.addNftTime(event)
                 msg={
                     "type": "template",
-                    "altText": "this is a carousel template",
+                    "altText": `${ResultNftTime.name_nft_game}✅ NFT time added`,
                     "template": {
                       "type": "carousel",
                       "columns": [
                         {
                           "title": '✅ NFT time added',
-                          "text": `${ResultNftTime.name_nft_game}\n${ResultNftTime.time_alert}`,
+                          "text": `${ResultNftTime.name_nft_game}\ntime : ${ResultNftTime.time_alert}`,
                           "actions": [
                             {
                               "type": "message",
@@ -195,7 +222,7 @@ module.exports.EventManage = async(req,res) =>{
             }else{
                 msg = {
                     "type": "text",
-                    "text": "#Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name description"
+                    "text": "📌 #Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name description"
                 }
             }
         }

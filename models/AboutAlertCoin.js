@@ -1,5 +1,6 @@
 const mongoShare = require( '../connextDB' );
 const bcrypt = require('bcrypt');
+const dayjs = require('dayjs')
 
 module.exports.AboutAlertCoin = async(req,res) =>{
     console.log("models",req);
@@ -95,9 +96,10 @@ module.exports.addNftTime = async(req,res) =>{
     const col = clientMongo.collection("alert_nft_time")
     const userTextCommand =  req.message.text 
     const more_message_cmd = req.message.text.split(" ")[3] ? " "+req.message.text.split(" ")[3] : ''
+    const time = userTextCommand.split(" ")[1]
     data = {
         'userLineId':req.source.userId,
-        'time_alert':userTextCommand.split(" ")[1],
+        'time_alert':time,
         'name_nft_game':userTextCommand.split(" ")[2]+more_message_cmd,
         'status':'ON',
         'created_at':new Date(),
@@ -118,10 +120,8 @@ module.exports.addNftTime = async(req,res) =>{
 }
 
 module.exports.myNftTime = async(req,res) =>{  
-
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
-    console.log("gggg");
 
     let query = [{
         '$match': {
