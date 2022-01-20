@@ -1,6 +1,7 @@
 const mongoShare = require( '../connextDB' );
 const bcrypt = require('bcrypt');
 const dayjs = require('dayjs')
+const {ObjectId} = require('mongodb'); 
 
 module.exports.AboutAlertCoin = async(req,res) =>{
     console.log("models",req);
@@ -69,6 +70,29 @@ module.exports.myCoin = async(req,res) =>{
      
 }
 
+module.exports.rmmCoin = async(req,res) =>{  
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("mycoin")
+    let query = [{
+        '$match': {
+            'userLineId':req.source.userId,
+            'coin':req.message.text.split(" ")[1],
+        }
+    }]
+    const result = await col.aggregate(query).toArray() 
+    .then(async result => {
+        await col.deleteOne({'userLineId':req.source.userId,'coin':req.message.text.split(" ")[1],})
+        return result[0]
+    })
+    .catch(err => {
+        console.log(err);
+        return false
+    });;
+    
+    return result
+   
+}
 
 module.exports.followCoin = async(req,res) =>{
     let data = {
@@ -145,6 +169,29 @@ module.exports.myNftTime = async(req,res) =>{
    
 }
 
+module.exports.rmNftTime = async(req,res) =>{  
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("alert_nft_time")
+    let query = [{
+        '$match': {
+            'userLineId':req.source.userId,
+            '_id':new ObjectId(req.message.text.split(" ")[1])
+        }
+    }]
+    const result = await col.aggregate(query).toArray() 
+    .then(async result => {
+        await col.deleteOne({'_id':new ObjectId(req.message.text.split(" ")[1])})
+        return result[0]
+    })
+    .catch(err => {
+        console.log(err);
+        return false
+    });;
+    
+    return result
+   
+}
 
 module.exports.userNftTime = async(req,res) =>{  
 

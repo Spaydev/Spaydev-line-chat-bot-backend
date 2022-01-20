@@ -28,10 +28,12 @@ module.exports.EventManage = async(req,res) =>{
             "text": "dont know"
         };
     
-        let eventText = event.message ? event.message.text.toUpperCase() : ''
-        let eventPostback = event.postback ? { 'data':event.postback.data, 'time':event.postback.time} : ''
-        if(eventText){
-            if (eventText === '!TODAY') {
+        
+        if(event.message){
+
+            const eventText = event.message.text.toUpperCase()
+
+            if (eventText.split(" ")[0] === '!TODAY') {
                 msg = [{
                     "type": "flex",
                     "altText": "Your Coin",
@@ -87,7 +89,7 @@ module.exports.EventManage = async(req,res) =>{
                         ]
                     }
                 }];
-            }else if (eventText === '!TOPCOINSDEFIGAME') {
+            }else if (eventText.split(" ")[0] === '!TOPCOINS') {
                 const coinData = await getListTopGamesCryptoToday()
                 array=[]
                 msg={
@@ -182,7 +184,7 @@ module.exports.EventManage = async(req,res) =>{
                     }
                     array.push(data)
                 }
-            } else if (eventText === '!COMMAND') {
+            } else if (eventText.split(" ")[0] === '!COMMAND') {
                 msg = [{
                     "type": "text",
                     "text": "📜 All command"
@@ -321,55 +323,99 @@ module.exports.EventManage = async(req,res) =>{
                 }
             
             }else if(eventText.split(" ")[0] === '!REMOVECOIN'){
-                msg = { 
-                    "type": "text",
-                    "text": "REMOVE COIN"
-                };
-            }else if(eventText.split(" ")[0] === '!FOLLOWCOIN'){
-
-                if(eventText.split(" ")[1] && eventText.split(" ")[2]){
-                    const coinTokenCheck = await getTokenInBlockChain(eventText.split(" ")[1])
-                    const price = eventText.split(" ")[2]
-
-                    if(isNaN(price)){
-                        msg = [{
-                            "type": "text",
-                            "text": " ⚠️ Price number only.\n\n!followcoin [token] [price USD]"
-                        }]
-                    }else{
-                        if(coinTokenCheck === true){
-                            obj={
-                                event,
-                                token:eventText.split(" ")[1].toLowerCase(),
-                                price:eventText.split(" ")[2],
-                            }
-
-                            const followCoinUser = await AboutAlertCoin.followCoin(obj)
-                            console.log(followCoinUser);
-
-                        }else{
-                            msg = [{
-                                "type": "text",
-                                "text": " ⚠️ Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
-                            }]
+                const result = await AboutAlertCoin.rmmCoin(event)
+                if(result !== undefined){
+                    msg = { 
+                        "type": "text",
+                        "text": "✅Successfully deleted"
+                    };            
+                }else{
+                    msg = { 
+                        "type": "text",
+                        "text": "❗️Not found in your database"
+                    };  
+                }
+            }else if(eventText ==='!MYTIME'){
+                const myTime = await AboutAlertCoin.myNftTime(event)
+                if(myTime !== undefined){
+                    data=[];
+                    msg = [{
+                        "type": "flex",
+                        "altText": "Your Coin",
+                        "contents": {
+                            "type": "carousel",
+                            "contents": data
                         }
+                    }];
+                    for (let i = 0; i < myTime.length; i++) {
+                        obj = {
+                            "type": "bubble",
+                            "body": {
+                              "type": "box",
+                              "layout": "vertical",
+                              "spacing": "sm",
+                              "contents": [
+                                {
+                                  "type": "text",
+                                  "text": "⏱ Reminder at "+myTime[i].time_alert,
+                                  "weight": "bold",
+                                  "size": "xl",
+                                  "wrap": true,
+                                  "contents": []
+                                },
+                                {
+                                  "type": "box",
+                                  "layout": "baseline",
+                                  "contents": [
+                                    {
+                                      "type": "text",
+                                      "text": myTime[i].name,
+                                      "weight": "bold",
+                                      "size": "sm",
+                                      "flex": 0,
+                                      "wrap": true,
+                                      "contents": []
+                                    }
+                                  ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                      {
+                                        "type": "text",
+                                        "text": myTime[i].text,
+                                        "contents": []
+                                      }
+                                    ]
+                                  }
+                              ]
+                            },
+                            "footer": {
+                              "type": "box",
+                              "layout": "vertical",
+                              "spacing": "sm",
+                              "contents": [
+                                {
+                                    "type": "button",
+                                    "action": {
+                                      "type": "message",
+                                      "label": "Remove",
+                                      "text": "!removetime "+myTime[i]._id
+                                    },
+                                    "height": "sm"
+                                  }
+                              ]
+                            }
+                        }
+                        data.push(obj)
                     }
                 }else{
                     msg={
-                        "type": "text",
-                        "text": "⚠️ #Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
-                    }
+                        "type":"text",
+                        "text":"please add you time \n !addtime name text"
+                    } 
                 }
-                
-            }else if(eventText ==='!MYTIME'){
-                const myTimeNFT = await getTokenInBlockChain(event)
-
-                msg={
-                    "type":"text",
-                    "text":"My time"
-                }
-
-
             }else if(eventText.split(" ")[0] === '!ADDTIME'){
                 msg={
                     type :'text',
@@ -408,7 +454,7 @@ module.exports.EventManage = async(req,res) =>{
                                         "label": "Time",
                                         "data": event.message.text,
                                         "mode": "time",
-                                        "initial": "16:35",
+                                        "initial": "",
                                         "max": "23:59",
                                         "min": "00:00"
                                     },
@@ -422,16 +468,66 @@ module.exports.EventManage = async(req,res) =>{
                         }
                     }];
                 }
-            }else if(eventText.split(" ")[0] === '!REMOVENFTTIME'){
-                msg = { 
-                    "type": "text",
-                    "text": "REMOVE NFT TIME"
-                };
+            }else if(eventText.split(" ")[0] === '!REMOVETIME'){
+                const result = await AboutAlertCoin.rmNftTime(event)
+                if(result !== undefined){
+                    msg = { 
+                        "type": "text",
+                        "text": "✅Successfully deleted"
+                    };            
+                }else{
+                    msg = { 
+                        "type": "text",
+                        "text": "❗️Not found in your database"
+                    };  
+                }
+                // console.log(result);
+                
             }
-        }else if (eventPostback){
+        }else if (event.postback){
+            const eventPostback = event.postback ? { 'data':event.postback.data, 'time':event.postback.time} : ''
             if(eventPostback.data.split(" ")[0].toUpperCase() === '!ADDTIME'){
                 const result = await AboutAlertCoin.addNftTime(event)
-                console.log(result);
+                if(result){
+                    msg = {
+                        "type": "flex",
+                        "altText": "Your Coin",
+                        "contents": {
+                            "type": "carousel",
+                            "contents": [
+                              {
+                                "type": "bubble",
+                                "body": {
+                                  "type": "box",
+                                  "layout": "horizontal",
+                                  "contents": [
+                                    {
+                                      "type": "text",
+                                      "text":  "✅ The notification has been saved.",
+                                      "wrap": true
+                                    }
+                                  ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "message",
+                                            "label": "Check List",
+                                            "text": "!mytime"
+                                        },
+                                        "style": "primary"
+                                    }
+                                    ]
+                                }
+                              }
+                            ]
+                        }
+                    }
+                }
             }
         }
 
@@ -476,6 +572,7 @@ getListTopGamesCryptoToday = async(req,res) =>{
 
 }
 getTokenInBlockChain = async(name) =>{
+    
     return await axios.get(`https://api.coingecko.com/api/v3/coins/${name.toLowerCase()}`)
         .then(function (response) {
             return true
