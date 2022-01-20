@@ -25,508 +25,416 @@ module.exports.EventManage = async(req,res) =>{
 
         let msg = { 
             "type": "text",
-            "text": "dont"
+            "text": "dont know"
         };
     
-        let eventText = event.message.text.toUpperCase();
-    
-        if (eventText === '!TODAY') {
-            msg = {
-                "type": "flex",
-                "altText": "this is a flex message",
-                "contents": {
-                    "type": "carousel",
-                    "contents": [
-                      {
-                        "type": "bubble",
-                        "body": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
-                            {
-                              "type": "text",
-                              "text": "Arm Chair, White",
-                              "weight": "bold",
-                              "size": "xl",
-                              "wrap": true,
-                              "contents": []
-                            },
-                            {
-                              "type": "box",
-                              "layout": "baseline",
-                              "contents": [
-                                {
-                                  "type": "text",
-                                  "text": "$49",
-                                  "weight": "bold",
-                                  "size": "xl",
-                                  "flex": 0,
-                                  "wrap": true,
-                                  "contents": []
-                                },
-                                {
-                                  "type": "text",
-                                  "text": ".99",
-                                  "weight": "bold",
-                                  "size": "sm",
-                                  "flex": 0,
-                                  "wrap": true,
-                                  "contents": []
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "footer": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "uri",
-                                "label": "Add to Cart",
-                                "uri": "https://linecorp.com"
-                              },
-                              "style": "primary"
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "uri",
-                                "label": "Add to wishlist",
-                                "uri": "https://linecorp.com"
-                              }
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "type": "bubble",
-                        "body": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
-                            {
-                              "type": "text",
-                              "text": "Metal Desk Lamp",
-                              "weight": "bold",
-                              "size": "lg",
-                              "wrap": true,
-                              "contents": []
-                            },
-                            {
-                              "type": "box",
-                              "layout": "baseline",
-                              "flex": 1,
-                              "contents": [
-                                {
-                                  "type": "text",
-                                  "text": "$11",
-                                  "weight": "bold",
-                                  "size": "xl",
-                                  "flex": 0,
-                                  "wrap": true,
-                                  "contents": []
-                                },
-                                {
-                                  "type": "text",
-                                  "text": ".99",
-                                  "weight": "bold",
-                                  "size": "sm",
-                                  "flex": 0,
-                                  "wrap": true,
-                                  "contents": []
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "text": "Temporarily out of stock",
-                              "size": "xxs",
-                              "color": "#FF5551",
-                              "flex": 0,
-                              "margin": "md",
-                              "wrap": true,
-                              "contents": []
-                            }
-                          ]
-                        },
-                        "footer": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "uri",
-                                "label": "Add to Cart",
-                                "uri": "https://linecorp.com"
-                              },
-                              "flex": 2,
-                              "color": "#AAAAAA",
-                              "style": "primary"
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "uri",
-                                "label": "Add to wish list",
-                                "uri": "https://linecorp.com"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-              }
-        }else if (eventText === '!TOPCOINSDEFIGAME') {
-            const coinData = await getListTopGamesCryptoToday()
-            array=[]
-            msg={
-                "type": "flex",
-                "altText": "TOP 5 COIN",
-                "contents": {
-                    "type": "bubble",
-                    "hero": {
-                      "type": "image",
-                      "url": "https://sv1.picz.in.th/images/2022/01/18/nEfSQn.jpg",
-                      "size": "full",
-                      "aspectRatio": "20:13",
-                      "aspectMode": "cover",
-                      "action": {
-                        "type": "uri",
-                        "label": "Action",
-                        "uri": "https://coinmarketcap.com/th/view/gaming/"
-                      }
-                    },
-                    "body": {
-                      "type": "box",
-                      "layout": "vertical",
-                      "spacing": "md",
-                      "action": {
-                        "type": "uri",
-                        "label": "Action",
-                        "uri": "https://coinmarketcap.com/th/view/gaming/"
-                      },
-                      "contents": [
-                        {
-                          "type": "text",
-                          "text": "TOP 5",
-                          "weight": "bold",
-                          "size": "xl",
-                          "contents": []
-                        },
-                        {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": array
-                        }
-                      ]
-                    },
-                    "footer": {
-                      "type": "box",
-                      "layout": "vertical",
-                      "contents": [
-                        {
-                          "type": "spacer",
-                          "size": "xxl"
-                        },
-                        {
-                          "type": "button",
-                          "action": {
-                            "type": "uri",
-                            "label": "See",
-                            "uri": "https://coinmarketcap.com/th/view/gaming/"
-                          },
-                          "color": "#905C44",
-                          "style": "primary"
-                        }
-                      ]
-                    }
-                  }
-              }
-            for (let i = 0; i < coinData.length; i++) {
-                data={
-                    "type": "box",
-                    "layout": "baseline",
-                    "contents": [
-                      {
-                        "type": "icon",
-                        "url": coinData[i].image[0]
-                      },
-                      {
-                        "type": "text",
-                        "text": coinData[i].name,
-                        "weight": "bold",
-                        "margin": "sm",
-                        "contents": []
-                      },
-                      {
-                        "type": "text",
-                        "text": `${coinData[i].marketcap}`,
-                        "size": "sm",
-                        "color": "#AAAAAA",
-                        "align": "end",
-                        "contents": []
-                      }
-                    ]
-                  }
-                array.push(data)
-            }
-        } else if (eventText === '!COMMAND') {
-            msg = [{
-                "type": "text",
-                "text": "📜 All command"
-              },{
-                "type": "text",
-                "text": "#Daily news about nft games\n - !today\n\n#My interesting coin \n - !mycoin\n - !addcoin [token]\n - !delcoin [token]\n\n#Top 5 Gaming Tokens\n - !topcoinsdefigame\n\n#Set price alerts coin\n - !followcoin [token] [price]\n\n#Notify when it's time to play nft games\n - !mynfttime\n - !addnfttime\n"
-              }]
-        }else if(eventText.split(" ")[0] === '!ADDCOIN'){
-            const coin = eventText.split(" ")[1] || null
-            
-            if(coin != null){
-                const coinTokenCheck = await getTokenInBlockChain(coin)
-                if(coinTokenCheck === true){
-                    const result = await AboutAlertCoin.addmyCoin(event)
-                    if(result != undefined){
-                        msg = [{
-                            "type": "text",
-                            "text": "Token is already"
-                        }]
-                    }else if(result == undefined){
-                        msg = [{
-                            "type": "text",
-                            "text": " ✅ Coins have been added"
-                        }]
-                    }
-                }else{
-                    msg = [{
-                        "type": "text",
-                        "text": "❗️Could not find coin with the given id.\nplease check the token in web \nhttps://www.coingecko.com/en/searchbox"
-                    }]
-                }   
-            }else{
-                msg = [{
-                    "type": "text",
-                    "text": "❗️Invalid format.\n\n#example\n!addcoin token"
-                }]
-            }
-          
-          // console.log(coin);
-
-        }else if(eventText.split(" ")[0] === '!MYCOIN'){
-            const getCoinUser = await AboutAlertCoin.myCoin(event)
-            if(getCoinUser){
-                const getCoinAPI = await getDetailCoin(getCoinUser)
-                data=[];
+        let eventText = event.message ? event.message.text.toUpperCase() : ''
+        let eventPostback = event.postback ? { 'data':event.postback.data, 'time':event.postback.time} : ''
+        if(eventText){
+            if (eventText === '!TODAY') {
                 msg = [{
                     "type": "flex",
                     "altText": "Your Coin",
                     "contents": {
                         "type": "carousel",
-                        "contents": data
-                      }
-                  }];
-                for (let i = 0; i < getCoinAPI.length; i++) {
-                    const colorLiveRate = getCoinAPI[i].changePercentage1h < 0 ? "#F05757FF" : "#31A047FF"
-                    obj = {
-                        "type": "bubble",
-                        "body": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
-                            {
-                              "type": "text",
-                              "text": `${getCoinAPI[i].name} (${getCoinAPI[i].symbol})`,
-                              "weight": "bold",
-                              "size": "md",
-                              "wrap": true,
-                              "contents": []
-                            },
-                            {
-                              "type": "box",
-                              "layout": "baseline",
-                              "contents": [
+                        "contents": [
+                        {
+                            "type": "bubble",
+                            "direction": "ltr",
+                            "header": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
                                 {
-                                  "type": "icon",
-                                  "url": getCoinAPI[i].image.small,
-                                  "size": "4xl"
+                                "type": "text",
+                                "text": "Header",
+                                "align": "center",
+                                "contents": []
                                 }
-                              ]
+                            ]
                             },
-                            {
-                              "type": "box",
-                              "layout": "horizontal",
-                              "contents": [
+                            "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
                                 {
-                                  "type": "text",
-                                  "text": "Price : "+getCoinAPI[i].price+" USD",
-                                  "contents": []
-                                },
-                                {
-                                  "type": "text",
-                                  "text": ""+getCoinAPI[i].changePercentage1h+"%",
-                                  "color": colorLiveRate,
-                                  "align": "end",
-                                  "gravity": "top",
-                                  "contents": []
+                                "type": "text",
+                                "text": "Body",
+                                "align": "center",
+                                "contents": []
                                 }
-                              ]
+                            ]
+                            },
+                            "footer": {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                "type": "button",
+                                "action": {
+                                    "type": "datetimepicker",
+                                    "label": "time",
+                                    "data": "!addtime",
+                                    "mode": "time",
+                                    "initial": "16:35",
+                                    "max": "23:59",
+                                    "min": "00:00"
+                                }
+                                }
+                            ]
                             }
-                          ]
+                        }
+                        ]
+                    }
+                }];
+            }else if (eventText === '!TOPCOINSDEFIGAME') {
+                const coinData = await getListTopGamesCryptoToday()
+                array=[]
+                msg={
+                    "type": "flex",
+                    "altText": "TOP 5 COIN",
+                    "contents": {
+                        "type": "bubble",
+                        "hero": {
+                        "type": "image",
+                        "url": "https://sv1.picz.in.th/images/2022/01/18/nEfSQn.jpg",
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover",
+                        "action": {
+                            "type": "uri",
+                            "label": "Action",
+                            "uri": "https://coinmarketcap.com/th/view/gaming/"
+                        }
+                        },
+                        "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "action": {
+                            "type": "uri",
+                            "label": "Action",
+                            "uri": "https://coinmarketcap.com/th/view/gaming/"
+                        },
+                        "contents": [
+                            {
+                            "type": "text",
+                            "text": "TOP 5",
+                            "weight": "bold",
+                            "size": "xl",
+                            "contents": []
+                            },
+                            {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": array
+                            }
+                        ]
                         },
                         "footer": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "contents": [
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
                             {
-                              "type": "button",
-                              "action": {
-                                "type": "uri",
-                                "label": "more",
-                                "uri": "https://linecorp.com"
-                              },
-                              "style": "primary"
+                            "type": "spacer",
+                            "size": "xxl"
                             },
                             {
-                              "type": "button",
-                              "action": {
-                                "type": "message",
-                                "label": "remove coin",
-                                "text": "!removecoin "+getCoinAPI[i].id
-                              }
+                            "type": "button",
+                            "action": {
+                                "type": "uri",
+                                "label": "See",
+                                "uri": "https://coinmarketcap.com/th/view/gaming/"
+                            },
+                            "color": "#905C44",
+                            "style": "primary"
                             }
-                          ]
+                        ]
                         }
-                      }
-                    data.push(obj)
+                    }
                 }
-            }else{
-                obj={
+                for (let i = 0; i < coinData.length; i++) {
+                    data={
+                        "type": "box",
+                        "layout": "baseline",
+                        "contents": [
+                        {
+                            "type": "icon",
+                            "url": coinData[i].image[0]
+                        },
+                        {
+                            "type": "text",
+                            "text": coinData[i].name,
+                            "weight": "bold",
+                            "margin": "sm",
+                            "contents": []
+                        },
+                        {
+                            "type": "text",
+                            "text": `${coinData[i].marketcap}`,
+                            "size": "sm",
+                            "color": "#AAAAAA",
+                            "align": "end",
+                            "contents": []
+                        }
+                        ]
+                    }
+                    array.push(data)
+                }
+            } else if (eventText === '!COMMAND') {
+                msg = [{
                     "type": "text",
-                    "text": "Please add at least 1 token.\n\n!addcoin name"
-                }
-
-                msg.push(obj)
-            }
-          
-        }else if(eventText.split(" ")[0] === '!REMOVECOIN'){
-             msg = { 
-                "type": "text",
-                "text": "REMOVE COIN"
-            };
-        }else if(eventText.split(" ")[0] === '!FOLLOWCOIN'){
-
-            if(eventText.split(" ")[1] && eventText.split(" ")[2]){
-                const coinTokenCheck = await getTokenInBlockChain(eventText.split(" ")[1])
-                const price = eventText.split(" ")[2]
-
-                if(isNaN(price)){
-                    msg = [{
-                        "type": "text",
-                        "text": " ⚠️ Price number only.\n\n!followcoin [token] [price USD]"
-                    }]
-                }else{
+                    "text": "📜 All command"
+                },{
+                    "type": "text",
+                    "text": "#Daily news about nft games\n - !today\n\n#My interesting coin \n - !mycoin\n - !addcoin [token]\n - !delcoin [token]\n\n#Top 5 Gaming Tokens\n - !topcoinsdefigame\n\n#Set price alerts coin\n - !followcoin [token] [price]\n\n#Notify when it's time to play nft games\n - !mynfttime\n - !addnfttime\n"
+                }]
+            }else if(eventText.split(" ")[0] === '!ADDCOIN'){
+                const coin = eventText.split(" ")[1] || null
+                
+                if(coin != null){
+                    const coinTokenCheck = await getTokenInBlockChain(coin)
                     if(coinTokenCheck === true){
-                        obj={
-                            event,
-                            token:eventText.split(" ")[1].toLowerCase(),
-                            price:eventText.split(" ")[2],
+                        const result = await AboutAlertCoin.addmyCoin(event)
+                        if(result != undefined){
+                            msg = [{
+                                "type": "text",
+                                "text": "Token is already"
+                            }]
+                        }else if(result == undefined){
+                            msg = [{
+                                "type": "text",
+                                "text": " ✅ Coins have been added"
+                            }]
                         }
-
-                        const followCoinUser = await AboutAlertCoin.followCoin(obj)
-                        console.log(followCoinUser);
-
                     }else{
                         msg = [{
                             "type": "text",
-                            "text": " ⚠️ Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
+                            "text": "❗️Could not find coin with the given id.\nplease check the token in web \nhttps://www.coingecko.com/en/searchbox"
                         }]
-                    }
-                }
-            }else{
-                msg={
-                    "type": "text",
-                    "text": "⚠️ #Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
-                }
-            }
-            
-        }else if(eventText ==='!MYNFTTIME'){
-            data=[]
-            sortTime=[]
-            msg = [{ 
-                "type": "text",
-                "text": "⏳ Notify when the time comes"
-            },{
-                "type": "template",
-                "altText": "MYNFTTIME",
-                "template": {
-                  "type": "carousel",
-                  "imageSize": "contain",
-                  "columns": data
-                }
-              }];
-            const ResultMyNftTime = await AboutAlertCoin.myNftTime(event)
-            for (let i = 0; i < ResultMyNftTime.length; i++) {
-                const h = ResultMyNftTime[i].time_alert.split(":")[0]
-                const m = ResultMyNftTime[i].time_alert.split(":")[1]
-                obj = {
-                    "title": `${ResultMyNftTime[i].time_alert} AM`,
-                    "text": `${ResultMyNftTime[i].name_nft_game}`,
-                    "actions": [{
-                            "type": "message",
-                            "label": "delete",
-                            "text": "!deletenfttime "+ResultMyNftTime[i]._id
+                    }   
+                }else{
+                    msg = [{
+                        "type": "text",
+                        "text": "❗️Invalid format.\n\n#example\n!addcoin token"
                     }]
-                        
                 }
-                data.push(obj)
-            }
+            
+            // console.log(coin);
 
-        }else if(eventText.split(" ")[0] === '!ADDNFTTIME'){
-            if(eventText.split(" ")[0] === '!ADDNFTTIME' && eventText.split(" ")[1] && eventText.split(" ")[2]){
-                const ResultNftTime = await AboutAlertCoin.addNftTime(event)
-                msg={
-                    "type": "template",
-                    "altText": `${ResultNftTime.name_nft_game}✅ NFT time added`,
-                    "template": {
-                      "type": "carousel",
-                      "columns": [
-                        {
-                          "title": '✅ NFT time added',
-                          "text": `${ResultNftTime.name_nft_game}\ntime : ${ResultNftTime.time_alert}`,
-                          "actions": [
-                            {
-                              "type": "message",
-                              "label": "check my NFT time",
-                              "text": "!mynfttime"
-                            }
-                          ],
+            }else if(eventText.split(" ")[0] === '!MYCOIN'){
+                const getCoinUser = await AboutAlertCoin.myCoin(event)
+                if(getCoinUser !== undefined){
+                    const getCoinAPI = await getDetailCoin(getCoinUser)
+                    console.log(getCoinAPI);
+                    data=[];
+                    msg = [{
+                        "type": "flex",
+                        "altText": "Your Coin",
+                        "contents": {
+                            "type": "carousel",
+                            "contents": data
                         }
-                      ]
+                    }];
+                    for (let i = 0; i < getCoinAPI.length; i++) {
+                        const colorLiveRate = getCoinAPI[i].changePercentage1h < 0 ? "#F05757FF" : "#31A047FF"
+                        obj = {
+                            "type": "bubble",
+                            "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": [
+                                {
+                                "type": "text",
+                                "text": `${getCoinAPI[i].name} (${getCoinAPI[i].symbol})`,
+                                "weight": "bold",
+                                "size": "md",
+                                "wrap": true,
+                                "contents": []
+                                },
+                                {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                    {
+                                    "type": "icon",
+                                    "url": getCoinAPI[i].image.small,
+                                    "size": "4xl"
+                                    }
+                                ]
+                                },
+                                {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {
+                                    "type": "text",
+                                    "text": "Price : "+getCoinAPI[i].price+" USD",
+                                    "contents": []
+                                    },
+                                    {
+                                    "type": "text",
+                                    "text": ""+getCoinAPI[i].changePercentage1h+"%",
+                                    "color": colorLiveRate,
+                                    "align": "end",
+                                    "gravity": "top",
+                                    "contents": []
+                                    }
+                                ]
+                                }
+                            ]
+                            },
+                            "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": [
+                                {
+                                "type": "button",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "more",
+                                    "uri": "https://linecorp.com"
+                                },
+                                "style": "primary"
+                                },
+                                {
+                                "type": "button",
+                                "action": {
+                                    "type": "message",
+                                    "label": "remove coin",
+                                    "text": "!removecoin "+getCoinAPI[i].id
+                                }
+                                }
+                            ]
+                            }
+                        }
+                        data.push(obj)
                     }
-                  }
-            }else{
-                msg = {
-                    "type": "text",
-                    "text": "📌 #Example\n 24Hr Bangkok (GMT+7) only\n\n!addnfttime 23:59 name description"
+                }else{
+                    msg={
+                        "type": "text",
+                        "text": "Please add at least 1 token.\n\n!addcoin name"
+                    }
                 }
+            
+            }else if(eventText.split(" ")[0] === '!REMOVECOIN'){
+                msg = { 
+                    "type": "text",
+                    "text": "REMOVE COIN"
+                };
+            }else if(eventText.split(" ")[0] === '!FOLLOWCOIN'){
+
+                if(eventText.split(" ")[1] && eventText.split(" ")[2]){
+                    const coinTokenCheck = await getTokenInBlockChain(eventText.split(" ")[1])
+                    const price = eventText.split(" ")[2]
+
+                    if(isNaN(price)){
+                        msg = [{
+                            "type": "text",
+                            "text": " ⚠️ Price number only.\n\n!followcoin [token] [price USD]"
+                        }]
+                    }else{
+                        if(coinTokenCheck === true){
+                            obj={
+                                event,
+                                token:eventText.split(" ")[1].toLowerCase(),
+                                price:eventText.split(" ")[2],
+                            }
+
+                            const followCoinUser = await AboutAlertCoin.followCoin(obj)
+                            console.log(followCoinUser);
+
+                        }else{
+                            msg = [{
+                                "type": "text",
+                                "text": " ⚠️ Token by address: Invalid address.\nplease check the token in web \nhttps://poocoin.app/"
+                            }]
+                        }
+                    }
+                }else{
+                    msg={
+                        "type": "text",
+                        "text": "⚠️ #Example for follow coin\n\n!followcoin [token] [price USD]\n\nIf the coin price reaches the set value You will be notified"
+                    }
+                }
+                
+            }else if(eventText ==='!MYTIME'){
+                const myTimeNFT = await getTokenInBlockChain(event)
+
+                msg={
+                    "type":"text",
+                    "text":"My time"
+                }
+
+
+            }else if(eventText.split(" ")[0] === '!ADDTIME'){
+                msg={
+                    type :'text',
+                    text : '!addtime name descriptime'
+                }
+                if(eventText.split(" ")[0] === '!ADDTIME' && eventText.split(" ")[1] || eventText.split(" ")[2]){
+                    msg = [{
+                        "type": "flex",
+                        "altText": "Your Coin",
+                        "contents": {
+                            "type": "carousel",
+                            "contents": [
+                            {
+                                "type": "bubble",
+                                "direction": "ltr",
+                                "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Select Time",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                                },
+                                "footer": {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "datetimepicker",
+                                        "label": "Time",
+                                        "data": event.message.text,
+                                        "mode": "time",
+                                        "initial": "16:35",
+                                        "max": "23:59",
+                                        "min": "00:00"
+                                    },
+                                    "color": "#0F69A7FF",
+                                    "style": "primary"
+                                    }
+                                ]
+                                }
+                            }
+                            ]
+                        }
+                    }];
+                }
+            }else if(eventText.split(" ")[0] === '!REMOVENFTTIME'){
+                msg = { 
+                    "type": "text",
+                    "text": "REMOVE NFT TIME"
+                };
             }
-        }else if(eventText.split(" ")[0] === '!REMOVENFTTIME'){
-             msg = { 
-                "type": "text",
-                "text": "REMOVE NFT TIME"
-            };
+        }else if (eventPostback){
+            if(eventPostback.data.split(" ")[0].toUpperCase() === '!ADDTIME'){
+                const result = await AboutAlertCoin.addNftTime(event)
+                console.log(result);
+            }
         }
+
         return await client.replyMessage(event.replyToken, msg);
     }
     

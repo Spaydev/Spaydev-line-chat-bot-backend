@@ -95,16 +95,16 @@ module.exports.followCoin = async(req,res) =>{
 }
 
 module.exports.addNftTime = async(req,res) =>{  
-
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
-    const userTextCommand =  req.message.text 
-    const more_message_cmd = req.message.text.split(" ")[3] ? " "+req.message.text.split(" ")[3] : ''
-    const time = userTextCommand.split(" ")[1]
+    const time = req.postback.params.time
+    const name = req.postback.data.split(" ")[1]
+    const text = req.postback.data.split(" ")[2] ? req.postback.data.split(" ")[2] : ""
     data = {
         'userLineId':req.source.userId,
         'time_alert':time,
-        'name_nft_game':userTextCommand.split(" ")[2]+more_message_cmd,
+        'name':name,
+        'text':text,
         'status':'ON',
         'created_at':new Date(),
         'updated_at':new Date(),
