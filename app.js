@@ -6,7 +6,7 @@ require('dotenv').config()
 const colors = require('colors');
 var cors = require('cors')
 const server = require('http').createServer(app);
-require('./manage-events/cron-jobsPushMessage.js');
+require('./manage-events-controllers/cron-jobsPushMessage.js');
 
 //////cors
 app.use(cors())

@@ -18,7 +18,7 @@ const client = new line.Client(config);
 let getuserNFTTime
 cron.schedule("*/15 * * * * *",async function() {
     getuserNFTTime = await getUserIndataBase() 
-    console.log("(getuserNFTTime) DATA BASE HAVE UPDATE".brightGreen);
+    console.log("Fetch Data (getuserNFTTime)".brightGreen);
 });
 
 ////main

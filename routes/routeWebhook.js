@@ -4,7 +4,7 @@ const controllerWebhook = require('../controllers/controllerWebhook');
 require('dotenv').config()
 
 
-router.post('/',controllerWebhook.Webhook)
+router.post('/',controllerWebhook.WebhookLineEventManage)
 
 // router.post('/get', (req, res) => {
 //     console.log(req.body.events);

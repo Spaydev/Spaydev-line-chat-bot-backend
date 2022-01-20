@@ -1,6 +1,6 @@
-const eventManage = require('../manage-events/eventManages');
+const eventManage = require('../manage-events-controllers/eventManages');
 
-module.exports.Webhook = async(req,res) =>{
+module.exports.WebhookLineEventManage = async(req,res) =>{
 
    await eventManage.EventManage(req)
     

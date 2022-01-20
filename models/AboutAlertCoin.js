@@ -14,6 +14,9 @@ module.exports.addmyCoin = async(req,res) =>{
     let obj = {
 
         "userLineId": req.source.userId,
+        'status':true,
+        'created_at': new Date(),
+        'updated_at': new Date(),
         "coin": req.message.text.split(" ")[1]
     }
 
@@ -56,6 +59,7 @@ module.exports.myCoin = async(req,res) =>{
     const mycoin = []
     const result = await col.aggregate(query).toArray()
     if(result[0]){
+        console.log();
         for (let i = 0; i < result.length; i++) {
             mycoin.push(result[i].coin)
         }
