@@ -2,6 +2,8 @@ const cron = require('node-cron');
 const dayjs = require('dayjs')
 require('dotenv').config()
 const AboutAlertCoin = require('../models/AboutAlertCoin');
+const transactionBot = require('../models/transactionBot');
+
 const line = require('@line/bot-sdk');
 const colors = require('colors');
 
@@ -16,13 +18,13 @@ const client = new line.Client(config);
 
 ////update data base every 15 second
 let getuserNFTTime
-cron.schedule("*/15 * * * * *",async function() {
+cron.schedule("*/2 * * * * *",async function() {
     getuserNFTTime = await getUserIndataBase() 
     console.log("Fetch Data (getuserNFTTime)".brightGreen);
 });
 
 ////main
-cron.schedule("*/15 * * * * *",async function() {
+cron.schedule("*/30 * * * * *",async function() {
     console.log(dayjs(new Date()).format('HH:mm'));
     await proccessTimeMyNFT(getuserNFTTime)
 });
@@ -30,13 +32,14 @@ cron.schedule("*/15 * * * * *",async function() {
 
 getUserIndataBase = async(req,res) =>{
 
-   const result = await AboutAlertCoin.userNftTime()
+   const result = await AboutAlertCoin.getUserTimeToPlay()
    data =[]
    for (let i = 0; i < result.length; i++) {
         obj = {
             'userLineId':result[i].userLineId,
-            'time_alert':result[i].time_alert,
-            'name_nft_game':result[i].name_nft_game,
+            'name':result[i].name,
+            'text':result[i].text,
+            'time':result[i].time_alert
         }
        data.push(obj)
    }
@@ -48,38 +51,74 @@ proccessTimeMyNFT = async(req,res) =>{
     const nowTime = dayjs(new Date()).format('HH:mm')
     data = []
     for (var i = 0; i < req.length; i++) { 
-        req[i].time_alert == nowTime ? pushMessageLineBot(req[i]) : ''
+        req[i].time == nowTime ? pushMessageLineBot(req[i]) : ''
 
     }
 }
 
 pushMessageLineBot = async(req,res) =>{
-    const msg = [{
-        "type": "text",
-        "text": `Hey`
-      },{
-        "type": "template",
-        "altText": `${req.time_alert} | ${req.name_nft_game}`,
-        "template": {
-            "type": "buttons",
-            "title": `🚨 NFT time has arrived. ${req.time_alert}`,
-            "text": `${req.name_nft_game}`,
-            "actions": [
-            {
-                "type": "message",
-                "label": "check my NFT time",
-                "text": "!mynfttime"
+    console.log(req);
+    const msg = {
+        "type": "flex",
+        "altText": "Hey Yho",
+        "contents": {
+            "type": "bubble",
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "🚨 It's time "+req.time,
+                  "weight": "bold",
+                  "size": "lg",
+                  "color": "#FF5100FF",
+                  "wrap": true,
+                  "contents": []
+                },
+                {
+                  "type": "box",
+                  "layout": "baseline",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "About : "+req.name,
+                      "weight": "bold",
+                      "size": "md",
+                      "color": "#126975FF",
+                      "flex": 0,
+                      "wrap": true,
+                      "contents": []
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "layout": "vertical",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "Des : "+req.text,
+                      "contents": []
+                    }
+                  ]
+                }
+              ]
             }
-            ]
-        }
-        }]
+          }
+    }
+
+    console.log(msg);
       
     await client.pushMessage(req.userLineId, msg)
-        .then((response) => {
-        //   console.log(response);
+        .then(async(response) => {
+            //  transactionBot(err)
+          console.log(response);
         })
-        .catch((err) => {
-          console.log("pushMessage",err);
+        .catch(async(err) => {
+            //  transactionBot(err)
+            console.log(err);
         });
 
 }

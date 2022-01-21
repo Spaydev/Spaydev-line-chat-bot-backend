@@ -22,15 +22,15 @@ module.exports.EventManage = async(req,res) =>{
     handleMessageEvent(event)
 
    async function handleMessageEvent(event) {
-
-        let msg = { 
-            "type": "text",
-            "text": "dont know"
-        };
     
-        
+        let msg = [{ 
+            "type": "text",
+            "text": "🤖 : What do you want sir?"
+        },{ 
+            "type": "text",
+            "text": "👉 can use !command"
+        }];
         if(event.message){
-
             const eventText = event.message.text.toUpperCase()
 
             if (eventText.split(" ")[0] === '!TODAY') {
@@ -38,56 +38,65 @@ module.exports.EventManage = async(req,res) =>{
                     "type": "flex",
                     "altText": "Your Coin",
                     "contents": {
-                        "type": "carousel",
-                        "contents": [
-                        {
-                            "type": "bubble",
-                            "direction": "ltr",
-                            "header": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "contents": [
-                                {
-                                "type": "text",
-                                "text": "Header",
-                                "align": "center",
-                                "contents": []
-                                }
-                            ]
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "hero": {
+                          "type": "image",
+                          "url": "https://www.img.in.th/images/e1052472fb66c53b91dc4d02dd7dfcfc.jpg",
+                          "size": "4xl",
+                          "aspectRatio": "1.51:1",
+                          "aspectMode": "fit",
+                          "backgroundColor": "#FFFFFFFF"
+                        },
+                        "body": {
+                          "type": "box",
+                          "layout": "vertical",
+                          "spacing": "sm",
+                          "margin": "xl",
+                          "contents": [
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "!topcoins",
+                                "text": "!topcoins"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
                             },
-                            "body": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "contents": [
-                                {
-                                "type": "text",
-                                "text": "Body",
-                                "align": "center",
-                                "contents": []
-                                }
-                            ]
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "!mytime",
+                                "text": "!mytime"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
                             },
-                            "footer": {
-                            "type": "box",
-                            "layout": "horizontal",
-                            "contents": [
-                                {
-                                "type": "button",
-                                "action": {
-                                    "type": "datetimepicker",
-                                    "label": "time",
-                                    "data": "!addtime",
-                                    "mode": "time",
-                                    "initial": "16:35",
-                                    "max": "23:59",
-                                    "min": "00:00"
-                                }
-                                }
-                            ]
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": " !mycoin",
+                                "text": " !mycoin"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
+                            },
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "!today",
+                                "text": "!today"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
                             }
+                          ]
                         }
-                        ]
-                    }
+                      }
                 }];
             }else if (eventText.split(" ")[0] === '!TOPCOINS') {
                 const coinData = await getListTopGamesCryptoToday()
@@ -186,12 +195,69 @@ module.exports.EventManage = async(req,res) =>{
                 }
             } else if (eventText.split(" ")[0] === '!COMMAND') {
                 msg = [{
-                    "type": "text",
-                    "text": "📜 All command"
-                },{
-                    "type": "text",
-                    "text": "#Daily news about nft games\n - !today\n\n#My interesting coin \n - !mycoin\n - !addcoin [token]\n - !delcoin [token]\n\n#Top 5 Gaming Tokens\n - !topcoinsdefigame\n\n#Set price alerts coin\n - !followcoin [token] [price]\n\n#Notify when it's time to play nft games\n - !mynfttime\n - !addnfttime\n"
-                }]
+                    "type": "flex",
+                    "altText": "Your Coin",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "hero": {
+                          "type": "image",
+                          "url": "https://www.img.in.th/images/e1052472fb66c53b91dc4d02dd7dfcfc.jpg",
+                          "size": "4xl",
+                          "aspectRatio": "1.51:1",
+                          "aspectMode": "fit",
+                          "backgroundColor": "#FFFFFFFF"
+                        },
+                        "body": {
+                          "type": "box",
+                          "layout": "vertical",
+                          "spacing": "sm",
+                          "margin": "xl",
+                          "contents": [
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "top coins",
+                                "text": "!topcoins"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
+                            },
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "Mytime",
+                                "text": "!mytime"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
+                            },
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "Mycoin",
+                                "text": "!mycoin"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
+                            },
+                            {
+                              "type": "button",
+                              "action": {
+                                "type": "message",
+                                "label": "new update",
+                                "text": "!today"
+                              },
+                              "color": "#205951FF",
+                              "style": "primary"
+                            }
+                          ]
+                        }
+                      }
+                }];
             }else if(eventText.split(" ")[0] === '!ADDCOIN'){
                 const coin = eventText.split(" ")[1] || null
                 
@@ -202,12 +268,12 @@ module.exports.EventManage = async(req,res) =>{
                         if(result != undefined){
                             msg = [{
                                 "type": "text",
-                                "text": "Token is already"
+                                "text": "👍 Coins is already"
                             }]
                         }else if(result == undefined){
                             msg = [{
                                 "type": "text",
-                                "text": " ✅ Coins have been added"
+                                "text": " ✅ Coins added"
                             }]
                         }
                     }else{
@@ -298,7 +364,7 @@ module.exports.EventManage = async(req,res) =>{
                                 "action": {
                                     "type": "uri",
                                     "label": "more",
-                                    "uri": "https://linecorp.com"
+                                    "uri": "https://www.coingecko.com/en/coins/"+getCoinAPI[i].id
                                 },
                                 "style": "primary"
                                 },
@@ -318,7 +384,7 @@ module.exports.EventManage = async(req,res) =>{
                 }else{
                     msg={
                         "type": "text",
-                        "text": "Please add at least 1 token.\n\n!addcoin name"
+                        "text": "Please add at least 1 token.\n\n!addcoin name\n\n#example\n!addcoin space-crypto\n\nhttps://www.coingecko.com/"
                     }
                 }
             
@@ -327,28 +393,28 @@ module.exports.EventManage = async(req,res) =>{
                 if(result !== undefined){
                     msg = { 
                         "type": "text",
-                        "text": "✅Successfully deleted"
+                        "text": "✅ Successfully deleted"
                     };            
                 }else{
                     msg = { 
                         "type": "text",
-                        "text": "❗️Not found in your database"
+                        "text": "I can't delete it. 😥 not found "
                     };  
                 }
             }else if(eventText ==='!MYTIME'){
                 const myTime = await AboutAlertCoin.myNftTime(event)
-                if(myTime !== undefined){
+                if(myTime.length){
                     data=[];
                     msg = [{
                         "type": "flex",
-                        "altText": "Your Coin",
+                        "altText": "Your Times",
                         "contents": {
                             "type": "carousel",
                             "contents": data
                         }
                     }];
                     for (let i = 0; i < myTime.length; i++) {
-                        obj = {
+                        obj ={
                             "type": "bubble",
                             "body": {
                               "type": "box",
@@ -371,7 +437,7 @@ module.exports.EventManage = async(req,res) =>{
                                       "type": "text",
                                       "text": myTime[i].name,
                                       "weight": "bold",
-                                      "size": "sm",
+                                      "size": "xl",
                                       "flex": 0,
                                       "wrap": true,
                                       "contents": []
@@ -379,16 +445,16 @@ module.exports.EventManage = async(req,res) =>{
                                   ]
                                 },
                                 {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                      {
-                                        "type": "text",
-                                        "text": myTime[i].text,
-                                        "contents": []
-                                      }
-                                    ]
-                                  }
+                                  "type": "box",
+                                  "layout": "vertical",
+                                  "contents": [
+                                    {
+                                      "type": "text",
+                                      "text": myTime[i].text || "no text",
+                                      "contents": []
+                                    }
+                                  ]
+                                }
                               ]
                             },
                             "footer": {
@@ -397,31 +463,31 @@ module.exports.EventManage = async(req,res) =>{
                               "spacing": "sm",
                               "contents": [
                                 {
-                                    "type": "button",
-                                    "action": {
-                                      "type": "message",
-                                      "label": "Remove",
-                                      "text": "!removetime "+myTime[i]._id
-                                    },
-                                    "height": "sm"
+                                  "type": "button",
+                                  "action": {
+                                    "type": "message",
+                                    "label": "remove",
+                                    "text": "!removetime "+myTime[i]._id
                                   }
+                                }
                               ]
                             }
-                        }
-                        data.push(obj)
+                          }
+                     data.push(obj)   
                     }
                 }else{
                     msg={
                         "type":"text",
-                        "text":"please add you time \n !addtime name text"
+                        "text":"🤔 please add you time \n\n👉 !addtime name text"
                     } 
                 }
             }else if(eventText.split(" ")[0] === '!ADDTIME'){
                 msg={
                     type :'text',
-                    text : '!addtime name descriptime'
+                    text : ' 👉 !addtime name'
                 }
                 if(eventText.split(" ")[0] === '!ADDTIME' && eventText.split(" ")[1] || eventText.split(" ")[2]){
+
                     msg = [{
                         "type": "flex",
                         "altText": "Your Coin",
@@ -473,12 +539,12 @@ module.exports.EventManage = async(req,res) =>{
                 if(result !== undefined){
                     msg = { 
                         "type": "text",
-                        "text": "✅Successfully deleted"
+                        "text": "✅ Successfully deleted"
                     };            
                 }else{
                     msg = { 
                         "type": "text",
-                        "text": "❗️Not found in your database"
+                        "text": "❗️ Not found in your list"
                     };  
                 }
                 // console.log(result);
@@ -529,6 +595,11 @@ module.exports.EventManage = async(req,res) =>{
                     }
                 }
             }
+        }else if(event.type == "memberJoined"){
+             msg = { 
+                "type": "text",
+                "text": "Hi There++"
+            };
         }
 
         return await client.replyMessage(event.replyToken, msg);

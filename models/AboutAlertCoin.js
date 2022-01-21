@@ -3,10 +3,6 @@ const bcrypt = require('bcrypt');
 const dayjs = require('dayjs')
 const {ObjectId} = require('mongodb'); 
 
-module.exports.AboutAlertCoin = async(req,res) =>{
-    console.log("models",req);
-   
-}
 
 module.exports.addmyCoin = async(req,res) =>{
     const clientMongo = mongoShare.getDATABASE();
@@ -15,10 +11,11 @@ module.exports.addmyCoin = async(req,res) =>{
     let obj = {
 
         "userLineId": req.source.userId,
+        "coin": req.message.text.split(" ")[1],
         'status':true,
         'created_at': new Date(),
-        'updated_at': new Date(),
-        "coin": req.message.text.split(" ")[1]
+        'updated_at': new Date()
+       
     }
 
     let query = [{
@@ -26,11 +23,12 @@ module.exports.addmyCoin = async(req,res) =>{
                 'userLineId': req.source.userId,
                 'coin':req.message.text.split(" ")[1],
                 'status':true,
-                'created_at': new Date(),
-                'updated_at': new Date(),
             }
         }]
+        
+    await Transaction_space(req)
     const result = await col.aggregate(query).toArray()
+    console.log(result);
     if(result[0]){
 
         return result[0]
@@ -52,12 +50,15 @@ module.exports.addmyCoin = async(req,res) =>{
 module.exports.myCoin = async(req,res) =>{
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("mycoin")
+
     let query = [{
         '$match': {
             'userLineId': req.source.userId,
         }
     }]
     const mycoin = []
+
+    await Transaction_space(req)
     const result = await col.aggregate(query).toArray()
     if(result[0]){
         console.log();
@@ -74,12 +75,15 @@ module.exports.rmmCoin = async(req,res) =>{
 
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("mycoin")
+
     let query = [{
         '$match': {
             'userLineId':req.source.userId,
             'coin':req.message.text.split(" ")[1],
         }
     }]
+    
+    await Transaction_space(req)
     const result = await col.aggregate(query).toArray() 
     .then(async result => {
         await col.deleteOne({'userLineId':req.source.userId,'coin':req.message.text.split(" ")[1],})
@@ -94,33 +98,11 @@ module.exports.rmmCoin = async(req,res) =>{
    
 }
 
-module.exports.followCoin = async(req,res) =>{
-    let data = {
-        'userLineId':req.event.source.userId,
-        'token': req.token,
-        'price': req.priceAlert,
-        'created_at': new Date(),
-        'updated_at': new Date(),
-    }
-    const clientMongo = mongoShare.getDATABASE();
-    const col = clientMongo.collection("followcoin")
-
-    const result = await col.insertOne(data)
-        .then(result => {
-            return true
-        })
-        .catch(err => {
-            console.log(err);
-            return false
-        });;
-    return result
-
-     
-}
-
 module.exports.addNftTime = async(req,res) =>{  
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
+
+
     const time = req.postback.params.time
     const name = req.postback.data.split(" ")[1]
     const text = req.postback.data.split(" ")[2] ? req.postback.data.split(" ")[2] : ""
@@ -133,7 +115,7 @@ module.exports.addNftTime = async(req,res) =>{
         'created_at':new Date(),
         'updated_at':new Date(),
     }
-
+    await Transaction_space(req)
     const result = await col.insertOne(data)
     .then(result => {
         return data
@@ -151,34 +133,40 @@ module.exports.myNftTime = async(req,res) =>{
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
 
+
     let query = [{
         '$match': {
             'userLineId': req.source.userId,
         }
     }]
+
+    await Transaction_space(req)
     const result = await col.aggregate(query).toArray()
     .then(result => {
         return result
     })
     .catch(err => {
         console.log(err);
-        return false
-    });;
-    
+    });
+
     return result
+    
    
 }
 
 module.exports.rmNftTime = async(req,res) =>{  
-
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
+
+
     let query = [{
         '$match': {
             'userLineId':req.source.userId,
             '_id':new ObjectId(req.message.text.split(" ")[1])
         }
     }]
+
+    await Transaction_space(req)
     const result = await col.aggregate(query).toArray() 
     .then(async result => {
         await col.deleteOne({'_id':new ObjectId(req.message.text.split(" ")[1])})
@@ -193,19 +181,43 @@ module.exports.rmNftTime = async(req,res) =>{
    
 }
 
-module.exports.userNftTime = async(req,res) =>{  
-
+module.exports.getUserTimeToPlay = async(req,res) =>{  
     const clientMongo = mongoShare.getDATABASE();
     const col = clientMongo.collection("alert_nft_time")
-    data =[]
+
     const result = await col.find({}).toArray()
     .then(result => {
         return result
     })
     .catch(err => {
         console.log(err);
+    });
+
+    return result
+    
+   
+}
+
+
+
+Transaction_space = async(req,res) =>{ 
+
+    let History = {}
+    History.userLineId = req.source.userId
+    History.command_data = req.message ? req.message : req.postback
+    History.data = req
+    History.type = req.type
+    History.create_at = new Date()
+
+    const clientMongo = mongoShare.getDATABASE();
+    const col2 = clientMongo.collection("transaction_space")
+    await col2.insertOne(History)
+    .then(async result => {
+        return true
+    })
+    .catch(err => {
+        console.log(err);
         return false
     });;
-    return result
    
 }
