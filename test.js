@@ -15,20 +15,24 @@ async function scrapeData() {
     // Load HTML we fetched in the previous line
     const $ = cheerio.load(data);
     // Select all the list items in plainlist class
-    const listItems = $(".post_layout_news-excerpt ");
+    const listItems = $(".post_item");
     // Stores data for all countries
     const countries = [];
     // Use .each method to loop through the li we selected
     listItems.each((idx, el) => {
       // Object holding data for each country/jurisdiction
-      const country = { name: "", date: "" };
+      const country = { name: "", topic: "" ,date: ""};
       // Select the text content of a and span elements
       // Store the textcontent in the above object
-      country.name = $(el).children("div").text();
+      country.name = $(el).children("").text();
+      country.date = $(el).children(".post_meta span").text();
+      country.topic = $(el).children(".post_meta_item").text();
+      country.content = $(el).children(".post_content").text();
+
       // Populate countries array with country data
       countries.push(country);
     });
-    console.log(countries[0]);
+    console.log(countries);
 
   } catch (err) {
     console.error(err);
