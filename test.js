@@ -5,51 +5,52 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 // URL of the page we want to scrape
-const url = "https://nftplazas.com/nft-gaming-news/";
+
 
 // Async function which scrapes the data
 async function scrapeData() {
+  const url = "https://nftplazas.com/nft-gaming-news/";
   try {
-    // Fetch HTML of the page we want to scrape
     const { data } = await axios.get(url);
-    // Load HTML we fetched in the previous line
     const $ = cheerio.load(data);
-    // Select all the list items in plainlist class
-    const listItems = $(".post_item");
-    // Stores data for all countries
-    const countries = [];
-    // Use .each method to loop through the li we selected
-    listItems.each((idx, el) => {
-      // Object holding data for each country/jurisdiction
-      const country = { name: "", topic: "" ,date: ""};
-      // Select the text content of a and span elements
-      // Store the textcontent in the above object
-      country.name = $(el).children("").text();
-      country.date = $(el).children(".post_meta span").text();
-      country.topic = $(el).children(".post_meta_item").text();
-      country.content = $(el).children(".post_content").text();
+    const ArrayGame = [];
 
-      // Populate countries array with country data
-      countries.push(country);
+    const Categories = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_categories");
+    const Title = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_title");
+    const Link = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_categories");
+    const Image = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_featured");
+    const Content = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_body ");
+    const DateTime = $(".wpb_column .wpb_wrapper .sc_recent_news .post_item .post_meta");
+
+    let obj = {};
+
+    Categories.each((idx, el) => { 
+      obj.categorie = $(el).children("").text();
     });
-    console.log(countries);
 
+    Title.each((idx, el) => {
+      obj.title = $(el).children("").text();
+    });
+
+    Link.each((idx, el) => {
+      obj.link = $(el).children("").attr('href');
+    });
+
+    Image.each((idx, el) => {
+      obj.image = $(el).children("").attr('src');
+    });
+
+    Content.each((idx, el) => {
+      obj.content = $(el).children(".post_content").text().replace(/\r?\n?\t|\r/g, "");
+    });
+
+    DateTime.each((idx, el) => {
+      obj.date = $(el).children(".post_date").text();
+    });
+    
   } catch (err) {
     console.error(err);
   }
+  return obj
 }
 // Invoke the above function
-scrapeData();
-
-const puppeteer = require('puppeteer')
-
-async function fn() {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-
-  await page.setViewport({ width: 1600, height: 1600 ,deviceScaleFactor: 2})
-  await page.goto('https://nftplazas.com/nft-gaming-news/')
-  await page.screenshot({ path: './screenshots/image.jpg', clip: { x: 200, y: 850, width: 800, height: 320 } }) // your original try
-
-  await browser.close()
-}

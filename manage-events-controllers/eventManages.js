@@ -5,6 +5,7 @@ const line = require('@line/bot-sdk');
 const CC = require('currency-converter-lt')
 const AboutAlertCoin = require('../models/AboutAlertCoin');
 let currencyConverter = new CC()
+const dayjs = require('dayjs')
 
 
 //////////////// config  ////////////////
@@ -34,70 +35,102 @@ module.exports.EventManage = async(req,res) =>{
             const eventText = event.message.text.toUpperCase()
 
             if (eventText.split(" ")[0] === '!TODAY') {
+                const resultNews = await AboutAlertCoin.getNewsToday()
                 msg = [{
                     "type": "flex",
-                    "altText": "Your Coin",
+                    "altText": "NEWS TO DAYS !!!!",
                     "contents": {
-                        "type": "bubble",
-                        "direction": "ltr",
-                        "hero": {
-                          "type": "image",
-                          "url": "https://www.img.in.th/images/e1052472fb66c53b91dc4d02dd7dfcfc.jpg",
-                          "size": "4xl",
-                          "aspectRatio": "1.51:1",
-                          "aspectMode": "fit",
-                          "backgroundColor": "#FFFFFFFF"
-                        },
-                        "body": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "spacing": "sm",
-                          "margin": "xl",
-                          "contents": [
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "message",
-                                "label": "!topcoins",
-                                "text": "!topcoins"
-                              },
-                              "color": "#205951FF",
-                              "style": "primary"
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "message",
-                                "label": "!mytime",
-                                "text": "!mytime"
-                              },
-                              "color": "#205951FF",
-                              "style": "primary"
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "message",
-                                "label": " !mycoin",
-                                "text": " !mycoin"
-                              },
-                              "color": "#205951FF",
-                              "style": "primary"
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "message",
-                                "label": "!today",
-                                "text": "!today"
-                              },
-                              "color": "#205951FF",
-                              "style": "primary"
-                            }
-                          ]
+                      "type": "bubble",
+                      "header": {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "backgroundColor": "#FFFFFFFF",
+                        "borderColor": "#FFFFFFFF",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": resultNews[0].categorie,
+                            "weight": "bold",
+                            "size": "xs",
+                            "color": "#2E2E2EFF",
+                            "contents": []
+                          },
+                          {
+                            "type": "text",
+                            "text":  dayjs(resultNews[0].created_at).format('DD/MM/YYYY'),
+                            "weight": "regular",
+                            "size": "xxs",
+                            "color": "#2B6BA0FF",
+                            "align": "end",
+                            "contents": []
+                          }
+                        ]
+                      },
+                      "hero": {
+                        "type": "image",
+                        "url": resultNews[0].image,
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover",
+                        "action": {
+                          "type": "uri",
+                          "label": "Action",
+                          "uri": resultNews[0].link
                         }
+                      },
+                      "body": {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "spacing": "md",
+                        "contents": [
+                          {
+                            "type": "box",
+                            "layout": "vertical",
+                            "flex": 2,
+                            "spacing": "md",
+                            "contents": [
+                              {
+                                "type": "text",
+                                "text": resultNews[0].title,
+                                "weight": "bold",
+                                "color": "#1A7E97FF",
+                                "flex": 1,
+                                "contents": []
+                              },
+                              {
+                                "type": "separator"
+                              },
+                              {
+                                "type": "text",
+                                "text": resultNews[0].content,
+                                "weight": "regular",
+                                "flex": 2,
+                                "gravity": "center",
+                                "contents": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "footer": {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                          {
+                            "type": "button",
+                            "action": {
+                              "type": "uri",
+                              "label": "More",
+                              "uri": resultNews[0].link
+                            },
+                            "color": "#0AAA6DFF",
+                            "style": "primary"
+                          }
+                        ]
                       }
-                }];
+                    }
+                  }]
+
             }else if (eventText.split(" ")[0] === '!TOPCOINS') {
                 const coinData = await getListTopGamesCryptoToday()
                 array=[]
@@ -368,6 +401,16 @@ module.exports.EventManage = async(req,res) =>{
                                 },
                                 "style": "primary"
                                 },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "buy",
+                                        "uri": "https://poocoin.app/tokens/"+getCoinAPI[i].contractAddress
+                                    },
+                                    "color": "#EB9400FF",
+                                    "style": "primary"
+                                    },
                                 {
                                 "type": "button",
                                 "action": {

@@ -198,6 +198,57 @@ module.exports.getUserTimeToPlay = async(req,res) =>{
    
 }
 
+module.exports.addNewsToday = async(req,res) =>{  
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("news_today")
+
+    obj = {
+        categorie: req.categorie,
+        title: req.title,
+        link: req.link,
+        image: req.image,
+        content: req.content,
+        date: req.date,
+        created_at: new Date(),
+        updated_at: new Date(),
+    }
+    const result = await col.insertOne(obj)
+    .then(result => {
+    })
+    .catch(err => {
+        console.log(err);
+    });;
+    
+
+   
+}
+
+module.exports.getNewsToday = async(req,res) =>{  
+    const clientMongo = mongoShare.getDATABASE();
+    const col = clientMongo.collection("news_today")
+
+    let query =[
+        {
+          '$sort': {
+            '_id': -1
+          }
+        }, {
+          '$limit': 1
+        }
+      ]
+
+    const result = await col.aggregate(query).toArray()
+    .then(result => {
+        return result
+    })
+    .catch(err => {
+        console.log(err);
+    });;
+
+    return result
+   
+}
+
 
 
 Transaction_space = async(req,res) =>{ 
