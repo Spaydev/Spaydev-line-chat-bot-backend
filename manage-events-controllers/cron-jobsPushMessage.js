@@ -17,6 +17,7 @@ const config = {
 const client = new line.Client(config);
 
 ////get news every 12 hr
+//0 */12 * * *"
 cron.schedule("0 */12 * * *",async function() {
     await addNewsNFTGAME()
     console.log("Fetch News NFT GAME (NewsNFTGAME)".brightGreen);

@@ -281,7 +281,7 @@ module.exports.EventManage = async(req,res) =>{
                               "type": "button",
                               "action": {
                                 "type": "message",
-                                "label": "new update",
+                                "label": "News",
                                 "text": "!today"
                               },
                               "color": "#205951FF",
