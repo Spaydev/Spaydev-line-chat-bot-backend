@@ -29,7 +29,7 @@ module.exports.EventManage = async(req,res) =>{
             "text": "🤖 : What do you want sir?"
         },{ 
             "type": "text",
-            "text": "👉 can use !command"
+            "text": "👉 can use !help"
         }];
         if(event.message){
             const eventText = event.message.text.toUpperCase()
@@ -188,7 +188,7 @@ module.exports.EventManage = async(req,res) =>{
                             "type": "button",
                             "action": {
                                 "type": "uri",
-                                "label": "See",
+                                "label": "See More",
                                 "uri": "https://coinmarketcap.com/th/view/gaming/"
                             },
                             "color": "#905C44",
@@ -226,7 +226,7 @@ module.exports.EventManage = async(req,res) =>{
                     }
                     array.push(data)
                 }
-            } else if (eventText.split(" ")[0] === '!COMMAND') {
+            } else if (eventText.split(" ")[0] === '!HELP') {
                 msg = [{
                     "type": "flex",
                     "altText": "Your Coin",
@@ -251,10 +251,10 @@ module.exports.EventManage = async(req,res) =>{
                               "type": "button",
                               "action": {
                                 "type": "message",
-                                "label": "top coins",
+                                "label": "Top Coins",
                                 "text": "!topcoins"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
@@ -264,7 +264,7 @@ module.exports.EventManage = async(req,res) =>{
                                 "label": "Mytime",
                                 "text": "!mytime"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
@@ -274,17 +274,17 @@ module.exports.EventManage = async(req,res) =>{
                                 "label": "Mycoin",
                                 "text": "!mycoin"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
                               "type": "button",
                               "action": {
                                 "type": "message",
-                                "label": "News",
+                                "label": "News to Day",
                                 "text": "!today"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             }
                           ]
