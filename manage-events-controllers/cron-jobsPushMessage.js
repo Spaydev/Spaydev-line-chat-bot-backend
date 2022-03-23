@@ -16,7 +16,8 @@ const config = {
 };
 const client = new line.Client(config);
 
-////get news every 12 hr 0 */12 * * *
+////get news every 12 hr
+//0 */12 * * *"
 cron.schedule("0 */12 * * *",async function() {
     await addNewsNFTGAME()
     console.log("Fetch News NFT GAME (NewsNFTGAME)".brightGreen);
@@ -24,7 +25,7 @@ cron.schedule("0 */12 * * *",async function() {
 
 ////update data mytime every 15 second
 cron.schedule("*/60 * * * * *",async function() {
-
+  console.log(dayjs(new Date()).format('HH:mm'));
     await sendBroadcastMessageToUser()
     const getuserNFTTime = await getUserIndataBase() 
     await proccessTimeMyNFT(getuserNFTTime)

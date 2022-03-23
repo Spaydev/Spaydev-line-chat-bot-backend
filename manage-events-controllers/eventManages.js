@@ -29,7 +29,7 @@ module.exports.EventManage = async(req,res) =>{
             "text": "🤖 : What do you want sir?"
         },{ 
             "type": "text",
-            "text": "👉 can use !command"
+            "text": "👉 can use !help"
         }];
         if(event.message){
             const eventText = event.message.text.toUpperCase()
@@ -188,7 +188,7 @@ module.exports.EventManage = async(req,res) =>{
                             "type": "button",
                             "action": {
                                 "type": "uri",
-                                "label": "See",
+                                "label": "See More",
                                 "uri": "https://coinmarketcap.com/th/view/gaming/"
                             },
                             "color": "#905C44",
@@ -226,7 +226,7 @@ module.exports.EventManage = async(req,res) =>{
                     }
                     array.push(data)
                 }
-            } else if (eventText.split(" ")[0] === '!COMMAND') {
+            } else if (eventText.split(" ")[0] === '!HELP') {
                 msg = [{
                     "type": "flex",
                     "altText": "Your Coin",
@@ -251,10 +251,10 @@ module.exports.EventManage = async(req,res) =>{
                               "type": "button",
                               "action": {
                                 "type": "message",
-                                "label": "top coins",
+                                "label": "Top Coins",
                                 "text": "!topcoins"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
@@ -264,7 +264,7 @@ module.exports.EventManage = async(req,res) =>{
                                 "label": "Mytime",
                                 "text": "!mytime"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
@@ -274,17 +274,17 @@ module.exports.EventManage = async(req,res) =>{
                                 "label": "Mycoin",
                                 "text": "!mycoin"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             },
                             {
                               "type": "button",
                               "action": {
                                 "type": "message",
-                                "label": "new update",
+                                "label": "News to Day",
                                 "text": "!today"
                               },
-                              "color": "#205951FF",
+                              "color": "#A24848FF",
                               "style": "primary"
                             }
                           ]
@@ -373,6 +373,8 @@ module.exports.EventManage = async(req,res) =>{
                                     {
                                     "type": "text",
                                     "text": "Price : "+getCoinAPI[i].price+" USD",
+                                    "size": "xs",
+                                    "weight": "bold",
                                     "contents": []
                                     },
                                     {
@@ -381,10 +383,34 @@ module.exports.EventManage = async(req,res) =>{
                                     "color": colorLiveRate,
                                     "align": "end",
                                     "gravity": "top",
+                                    "size": "xs",
                                     "contents": []
                                     }
                                 ]
-                                }
+                                },
+                                {
+                                  "type": "box",
+                                  "layout": "vertical",
+                                  "contents": [
+                                    {
+                                      "type": "text",
+                                      "text": "Total Supply : "+getCoinAPI[i].totalSupply,
+                                      "size": "xs",
+                                      "contents": []
+                                    }
+                                  ]
+                                },{
+                                  "type": "box",
+                                  "layout": "vertical",
+                                  "contents": [
+                                    {
+                                      "type": "text",
+                                      "text": "Market Cap : "+getCoinAPI[i].marketCap,
+                                      "size": "xs",
+                                      "contents": []
+                                    }
+                                  ]
+                                },
                             ]
                             },
                             "footer": {
@@ -700,6 +726,7 @@ getDetailCoin = async(value) =>{
     for (let i = 0; i < value.length; i++) {
         await axios.get("https://api.coingecko.com/api/v3/coins/"+value[i]+"?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false")
         .then(function (response) {
+          console.log(response);
             obj = { 
                 'id' : response.data.id,
                 'name' : response.data.name,
@@ -709,7 +736,10 @@ getDetailCoin = async(value) =>{
                 'changePercentage1h' : response.data.market_data.price_change_percentage_1h_in_currency.usd,
                 'contractAddress' :response.data.contract_address,
                 'image' : response.data.image,
-                'links' : response.data.links.homepage
+                'links' : response.data.links.homepage,
+                'totalSupply' :response.data.market_data.total_supply,
+                'marketCap' :response.data.market_data.market_cap.usd,
+                // 'totalSupply' :response.data.market_data.total_supply
             }
             data.push(obj)
         }).catch(error=>{
