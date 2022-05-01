@@ -20,7 +20,7 @@ module.exports.EventManage = async(req,res) =>{
     const event = req.body.events[0]
     console.log(event);
 
-    handleMessageEvent(event)
+    // handleMessageEvent(event)
 
    async function handleMessageEvent(event) {
     
